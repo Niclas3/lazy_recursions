@@ -42,7 +42,6 @@ export default function LayoutBlogPost({
           bounce: 0,
         }}
       />
-
       <div className="absolute right-4 top-24">
         <CopyButton />
       </div>
