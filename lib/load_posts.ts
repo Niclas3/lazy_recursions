@@ -8,8 +8,10 @@ export type Metadata = {
   summary: string
   layout: string
   date: string
-  categories: Array<string>
-  tags:Array<string>
+  // categories: Array<string>
+  // tags:Array<string>
+  categories: string
+  tags: string
   image?: string
 }
 

@@ -21,7 +21,8 @@ const options = {
 
 }
 
-export default async function Post({ params }:{params: {post_name: string} }){
+export default async function Post({ params }:{params: Promise<{post_name: string}> }){
+        
         const post_name = (await params)?.post_name;
         const post:Post | undefined = getBlogPosts()
                          .find((post)=> {
