@@ -1,54 +1,45 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import {notFound} from 'next/navigation'
 
 import {getBlogPosts} from "@/lib/load_posts"
+import type {Metadata,Post } from "@/lib/load_posts"
 
-export default async function Post_display(){
+// for Latex
+import rehypeHighlight from 'rehype-highlight'
+import rehypeMathjax from 'rehype-mathjax'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
 
-        const posts = getBlogPosts();
-        const post = posts[0];
-        
-        // const post_dir = path.join(process.cwd(), 'posts')
-        //
-        // const files = fs.readdirSync(post_dir).filter((file)=> path.extname(file) === '.mdx')
-        // files.map((file)=>{
-        //         const raw_content = fs.readFileSync(path.join(post_dir, file));
-        //         console.log(path.join(post_dir, file))
-        //         // console.log(raw_content)
-        // })
-        // return (<main suppressHydrationWarning>
-        //         <Post />
-        //         </main>);
+import 'katex/dist/katex.min.css'
+
+
+const options = {
+        mdxOptions: {
+                remarkPlugins: [remarkMath],
+                rehypePlugins: [rehypeKatex, rehypeHighlight, rehypeMathjax]
+        }
+
+}
+
+export default async function Post({ params }:{params: {post_name: string} }){
+        const post_name = (await params)?.post_name;
+        const post:Post | undefined = getBlogPosts()
+                         .find((post)=> {
+                                const postname = decodeURIComponent(post_name)
+                                return (post.slug === postname)
+                         });
+        if(!post){
+                notFound();
+        }
 
         return (
-<section>
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BlogPosting',
-            headline: post.metadata.title,
-            datePublished: post.metadata.publishedAt,
-            dateModified: post.metadata.publishedAt,
-            description: post.metadata.summary,
-            author: {
-              '@type': 'Person',
-              name: 'My Portfolio',
-            },
-          }),
-        }}
-      />
-      <h1 className="title font-semibold text-2xl tracking-tighter">
-        {post.metadata.title}
-      </h1>
-      <div className="flex justify-between items-center mt-2 mb-8 text-sm">
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-        </p>
-      </div>
-      <article className="prose">
-        <MDXRemote source={post.content} />
-      </article>
-    </section>);
+                <>
+                <h1 className="title font-semibold text-2xl tracking-tighter">
+                        {post.metadata.title}
+                </h1>
+
+                <MDXRemote source={post.content} options={options} />
+                </>
+               );
 }
 

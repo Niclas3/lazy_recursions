@@ -1,11 +1,22 @@
 import fs from 'fs'
 import path from 'path'
 
-type Metadata = {
+
+export type Metadata = {
   title: string
   publishedAt: string
   summary: string
+  layout: string
+  date: string
+  categories: Array<string>
+  tags:Array<string>
   image?: string
+}
+
+export type Post = {
+      metadata :Metadata
+      slug : string
+      content : {}
 }
 
 function parseFrontmatter(fileContent: string) {
@@ -27,7 +38,7 @@ function parseFrontmatter(fileContent: string) {
 }
 
 function getMDXFiles(dir:string) {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx')
+  return fs.readdirSync(dir).filter((file) => (path.extname(file) === '.mdx'))
 }
 
 function readMDXFile(filePath:string) {
