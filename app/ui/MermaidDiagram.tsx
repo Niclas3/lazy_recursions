@@ -66,8 +66,8 @@ export default function MermaidDiagram({children}:{children: React.ReactNode}){
                 mermaid.contentLoaded();
         },[children]);
         mermaid.contentLoaded();
-        const gcode = React.Children.map(children,(child)=>{
-                return child['props'].children
+        const gcode = React.Children.map(children,(child:any)=>{
+                return child.props.children
         })?.flat(1)[0];
 
         return (<pre ref={mermaid_ref} className="mermaid"> {gcode} </pre>);
