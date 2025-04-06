@@ -34,7 +34,7 @@ export default function RootLayout({
           defaultTheme="light"
         >
           <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
-            <div className="relative mx-auto w-full max-w-screen-sm flex-1 px-4 pt-20">
+            <div className="relative mx-auto w-full sm:max-w-screen-sm flex-1 px-4 pt-20">
               <Header />
               {children}
               <Footer />
