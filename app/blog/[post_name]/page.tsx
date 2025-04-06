@@ -4,6 +4,11 @@ import {notFound} from 'next/navigation'
 import {getBlogPosts} from "@/lib/load_posts"
 import type {Metadata,Post } from "@/lib/load_posts"
 
+import  More_info   from "@/app/ui/More_info"
+import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
+
+const components = { More_info, MermaidDiagram }
+
 // for Latex
 import rehypeHighlight from 'rehype-highlight'
 import rehypeMathjax from 'rehype-mathjax'
@@ -22,7 +27,6 @@ const options = {
 }
 
 export default async function Post({ params }:{params: Promise<{post_name: string}> }){
-        
         const post_name = (await params)?.post_name;
         const post:Post | undefined = getBlogPosts()
                          .find((post)=> {
@@ -39,8 +43,22 @@ export default async function Post({ params }:{params: Promise<{post_name: strin
                         {post.metadata.title}
                 </h1>
 
-                <MDXRemote source={post.content} options={options} />
+                <MDXRemote source={post.content} options={options} components ={components}/>
                 </>
                );
 }
 
+// export default async function Post({ params }:{params: Promise<{post_name: string}> }){
+//         const post_name = (await params)?.post_name;
+//         const postname = decodeURIComponent(post_name)
+//         console.log(postname)
+//
+//         const  { default: Artical} = await import(`@/posts/${postname}.mdx`)
+//
+//         console.log(Artical);
+//         return (
+//                 <>
+//                 <Artical/>
+//                 </>
+//                );
+// }

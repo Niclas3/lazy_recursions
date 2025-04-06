@@ -55,21 +55,20 @@ mermaid.initialize(
   fontFamily: "Fira Code"
 });
 
-export default function MermaidDiagram({code}:{code:string}){
-        return (<div></div>);
-}
-
-// <!-- <MermaidDiagram code={abc} suppressHydrationWarning/> -->
-// export default function MermaidDiagram({children}:{children: React.ReactNode}){
-//         mermaid.initialize({});
-//         const mermaid_ref = useRef(null);
-//         useEffect(()=>{
-//                 mermaid.contentLoaded();
-//         },[children]);
-//         mermaid.contentLoaded();
-//         const gcode = React.Children.map(children,(child)=>{
-//                 return child['props'].children
-//         })?.flat(1)[0];
-//
-//         return (<pre ref={mermaid_ref} className="mermaid"> {gcode} </pre>);
+// export default function MermaidDiagram({children}: {children:React.ReactNode}){
+//         return (<pre className="mermaid"> {children} </pre>);
 // }
+
+export default function MermaidDiagram({children}:{children: React.ReactNode}){
+        mermaid.initialize({});
+        const mermaid_ref = useRef(null);
+        useEffect(()=>{
+                mermaid.contentLoaded();
+        },[children]);
+        mermaid.contentLoaded();
+        const gcode = React.Children.map(children,(child)=>{
+                return child['props'].children
+        })?.flat(1)[0];
+
+        return (<pre ref={mermaid_ref} className="mermaid"> {gcode} </pre>);
+}
