@@ -66,6 +66,59 @@ export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), 'posts'))
 }
 
+type BlogPost = {
+  title: string
+  description: string
+  link: string
+  uid: string
+}
+
+export function getBlogPostsName(){
+        const posts_dir = path.join(process.cwd(), 'posts')
+        return fs.readdirSync(posts_dir)
+                 .filter((name)=>{
+                         return path.extname(name) === '.mdx'
+                 })
+                 .map((post, index)=>{
+                         const name = path.basename(post, '.mdx')
+                         const link = '/blog/' + path.basename(post, '.mdx')
+                         return {
+                                 title : name,
+                                 description: "just for test",
+                                 link : link,
+                                 uid : index
+                         }
+                 })
+}
+
+export function getBlogPostsMeta(){
+        const posts_dir = path.join(process.cwd(), 'posts')
+        return fs.readdirSync(posts_dir)
+                 .filter((name)=>{
+                         return path.extname(name) === '.mdx'
+                 })
+                 .map((post)=>{
+                         const post_path = path.join(posts_dir, post)
+                        let { metadata, content } = readMDXFile(post_path)
+
+                        let slug = '/blog/'+path.basename(post, path.extname(post))
+
+                        return {
+                                metadata,
+                                slug,
+                                content,
+                        }
+                 })
+                 .map((post, index)=>{
+                         return {
+                                 title : post.metadata.title,
+                                 description: post.metadata.summary??"",
+                                 link : post.slug,
+                                 uid : index
+                         }
+                 })
+}
+
 export function formatDate(date: string, includeRelative = false) {
   let currentDate = new Date()
   if (!date.includes('T')) {

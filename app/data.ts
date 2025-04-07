@@ -1,9 +1,15 @@
-type Project = {
+export type Project = {
   name: string
   description: string
   link: string
   video: string
   id: string
+}
+export type BlogPost = {
+  title: string
+  description: string
+  link: string
+  uid: string
 }
 
 type WorkExperience = {
@@ -15,12 +21,6 @@ type WorkExperience = {
   id: string
 }
 
-type BlogPost = {
-  title: string
-  description: string
-  link: string
-  uid: string
-}
 
 type SocialLink = {
   label: string
