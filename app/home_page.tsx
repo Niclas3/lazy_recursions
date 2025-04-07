@@ -119,7 +119,7 @@ function MagneticSocialLink({
   )
 }
 
-export default function Home_page({blog_posts, projects}:{blog_posts : Array[BlogPost], projects: Array[Project]}) {
+export default function Home_page({blog_posts, projects}:{blog_posts : Array<any>, projects: Array<Project>}) {
   return (
     <motion.main
       className="space-y-24"
