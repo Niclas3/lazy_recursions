@@ -6,6 +6,10 @@ title: "[A]RTS 数据结构的基石3"
 date: 2025-03-08
 categories: []
 tags: [ARTS]
+summary: "我们在[基石1](/a-rts_w2_data_structions)和[基石2](a-rts_w3_data_structions2)中探讨了线性结构链表和数组，这周开始讨论一种非线性结构**树**。
+
+树结构是结点之间的“分支”关系，就像树🌲从芽点发出新的枝干一样。
+"
 ---
 ## 树与递归
 
@@ -40,7 +44,7 @@ tags: [ARTS]
 
 树的表达方式有很多，这篇文章会使用传统**根在上叶子在下**的方式绘制图像，也会提出一种**嵌套括号**的代码表示方式。
 
-<pre className="mermaid" >
+<MermaidDiagram >
 graph TD
     A ---> B
     A ---> C
@@ -55,7 +59,7 @@ graph TD
     class E,F greenNode
     classDef blueNode fill:#aaaaff,stroke:#0000ff,stroke-width:2px;
     classDef greenNode fill:#aaccff,stroke:#00ffff,stroke-width:2px;
-</pre>
+</MermaidDiagram >
 
 ## 二叉树
 **二叉树**是我们主要关注的树结构。在二叉树中，每个结点最多有两颗子树，在只有一颗子树的时候需要区分左右子树。
