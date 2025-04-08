@@ -49,7 +49,6 @@ function Table({ data }: { data: React.ReactNode }) {
 
 function CustomLink(props:any) {
   let href = props.href
-  console.log(props)
 
   const defaultClassName="text-blue-600 hover:underline"
 
@@ -77,12 +76,22 @@ function CustomLink(props:any) {
 }
 
 function RoundedImage(props:any) {
-  return <Image alt={props.alt} className="rounded-lg" {...props} />
+const src = props.src
+const alt = props.alt
+const caption = "caption"
+  return <div>
+          <img src={src} alt={alt} className="rounded-xl" />
+          <p className="text-center">{caption}</p>
+        </div>
 }
 
 function InlineCode ({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any) {
   return <code className={` ${className}`}>{children}</code>;
 };
+
+function MutilineCode({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any){
+  return <pre className={` ${className}`}>{children}</pre>;
+}
 
 function slugify(str:any) {
   return str
@@ -131,9 +140,10 @@ let components = {
   h4: createHeading(4),
   h5: createHeading(5),
   h6: createHeading(6),
-  // Image: RoundedImage,
+  img: RoundedImage,
   a: CustomLink,
   code: InlineCode,
+  pre: MutilineCode,
   // Table,
 }
 
