@@ -1,0 +1,52 @@
+---
+title: C中的const测试解析
+updated: 2014-02-23
+---
+
+
+===
+前言
+---
+
+刚刚我在逛Coolshell的时候看到一个人在评论里面提了一个问题，我修改了一下代码代码如下所示。
+开始
+--
+    #include <stdio.h>
+    int main(int argc, char **argv)
+    {
+      const int a = 10;
+	  int *b = &a;
+	  //const int *c = &a; /*P指向的数据是常量*/
+	  //int const *c = &a; /*P指向的数据是常量*/
+      //int * const c = &a;   /*P本身是常量*/
+
+  	  printf(" a %p:%d  b %p:%d\n", &a, a, b, *b);
+  	  *b = 5;
+  	  printf(" a %p:%d  b %p:%d\n", &a, a, b, *b);
+  	  return 0;
+	}
+
+好了，首先我们先看一下上面的代码，
+
+第一行定义了一个const修饰的int类型的变量a，然后定义一个指针b并赋值a，随后在打印a，b的地址和变量之后用指针b改变了
+a的值，再继续打印b的值。
+
+然后我们使用gcc编译后加上-wall选项之后只有一句警告：initialization discards qualifiers from pointer target type.也就是被指针指过之后就会降低变量的资格（const的资格）具体是因为什么等我明天再网上查查就能知道。
+
+但是这里给出解决方案如果你想保护一个变量不被你的指针胡乱修改请再指针上修饰表示自己指向的值不能修改，而不是在值的地方修改。
+
+另外我实验了三种添加const的位置 首先const是一个左结合修饰符也就是标准写法应该像我注释的倒数两行一样书写。
+第一种是不同的具体因为什么原因等我去找一找。
+
+
+
+
+
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/cn/80x15.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
+
+**本文章遵循CC协议，请自觉遵守    -作者Niclas**
+
+2014年2月23日 下午11:18
+

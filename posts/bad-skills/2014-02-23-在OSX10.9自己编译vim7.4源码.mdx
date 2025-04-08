@@ -1,0 +1,37 @@
+---
+title: 在OSX10.9（小牛）自己编译支持Python的vim7.4源码之路
+updated: 2014-02-23
+---
+
+事情的起因
+---
+
+要说事情的起因的话其实是我在10.8升级到10.9之后VIM总是有些不听使唤，不过那时候没有怎么写代码于是就凑活着用了。只到昨天晚上snipMate突然不能用了于是我卸载之后再装回来结果VIM彻底不停使唤了，于是我就想说里外里把VIM重新装一遍正好体验一下新特性.
+
+每次编译VIM都是坎坷的
+---
+编译VIM肯定需要源代码，所以编译前需要的准备工作就是要在官网上或者google code（如果你能下的下来的话）上下载一份最新的代码:<br>
+<code>hg clone https://vim.googlecode.com/hg/ vim</code>
+然后使用./configure增加自己想要的配置具体我不多说了。[点我了解跟多](http://benfrain.com/compiling-custom-vim-source-os-x-10-9-mavericks/)<br>
+前面的步骤我都轻车熟路,在make的时候出现了如下的编译错误<br>
+<code>
+os_unix.c:830:13: error: conflicting types for 'sigaltstack'
+        extern int sigaltstack __ARGS((const struct sigaltstack *ss, str...
+                   ^
+/usr/include/signal.h:85:5: note: previous declaration is here
+int     sigaltstack(const stack_t * __restrict, stack_t * __restrict)  _...
+        ^
+</code>
+仔细看一下好像是什么数据结构冲突的样子，知觉上不像是我的编译环境的问题，于是我在某度上搜了一下发现在OSX上编译VIM的少之又少实在找不到有什么又用的资料于是跑到谷歌的怀抱在
+**vim develop list**[上面](http://permalink.gmane.org/gmane.editors.vim.devel/43168)找到,相关问题的解决patch 有此问题的同学可以自己打一下补丁就可以了。
+不会用[patch](https://www.drupal.org/node/60108)的同学点击链接这里有教学。
+
+最后
+----
+每次只要和vim相关的配置操作就要花费很多时间去解决，这里记录一下希望有后来人不要走弯路，基本上有问题找vim GitHub上面的issue 也可找vim develop list 也可以，别用没有用的Baidu了真的。
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/cn/80x15.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
+**本文章遵循CC协议，请自觉遵守    -作者Niclas**
+下午3:59 2014年10月10日
+<br>niclas
+

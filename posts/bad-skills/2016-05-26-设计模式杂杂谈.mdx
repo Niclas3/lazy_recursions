@@ -1,0 +1,439 @@
+---
+title: 设计模式杂杂谈
+updated: 2014-05-26
+---
+
+> 北冥有鱼，其名为鲲。
+> 鲲之大，不知其几千里也。
+> 化而为鸟，其名 为鹏。鹏之背，不知其几千里也。
+> 怒而飞，其翼若垂天之云。是鸟也 ，海运则将徙于南冥。
+> 南冥者，天池也。 -- 庄子
+
+不知道从什么时候起设计模式，慢慢变成一个装逼必备的理论开始被讨论了，也许50年了。今天我们聊一种模式
+##Strategy Pattern
+我们先不说这些有的没的模式该是什么表现形式，照例应该先吹比。首先说说Strategy pattern的strategy是什么意思
+> a plan of action or policy designed to achieve a major or overall aim.
+（以上是Google translate友情提供翻译。）
+
+说Strategy是为了一个长期的目标制定的一个动作。从这种解释可以看出来，这个模式其实是代码中的动作（函数，方法）的集合。我想大家看过三国吧，Strategy pattern就像诸葛老儿给的锦囊计，你要用的时候找我,我给你我的技巧。（这里要注意的是，1.这个给的只是方法而不是对象（我说的这个对象是，即封装了属性又封装了方法的对象）。他在代码的表现形式上更像一个属性，你通过setter和getter方法改变和获取这个可设置的Strategy。
+
+1. 设计模式整体的概念在于抽象世界，所以他们常常把在**不同情况**下改变的东西变得可以改变并且**提出来**。
+2. 设计模式里面还有一个技巧，通过在类里实现一个空方法，调用组合对象的方法来提高并封装了组合对象的方法调用层级。让使用者认为自己在调用产生类的方法，而其实是产生类中组合实例的函数。
+
+##🌰我来举个老师去上课的例子吧
+```
+import Foundation
+/// 这是锦囊类
+protocol TeachCategorical {
+    func teach()
+}
+
+class MathClass: TeachCategorical {
+    func teach() {
+        print("教数学")
+    }
+}
+
+class EnglishClass: TeachCategorical {
+    func teach() {
+        print("教语文")
+    }
+}
+/// ------------我是分割线 -----------
+class ClassRoom  {
+    private var teachFunction: TeachCategorical! = MathClass()
+    
+    func setTeachFunction(teach: TeachCategorical) {
+        self.teachFunction = teach
+    }
+    
+    func publish() {
+        self.teachFunction.teach()
+    }
+}
+
+class MathClassRoom: ClassRoom {
+    override init() {
+        super.init()
+    }
+    
+    func teachMath() {
+        self.setTeachFunction(MathClass())
+    }
+}
+
+class EnglishClassRoom: ClassRoom {
+    override init() {
+        super.init()
+    }
+    
+    func teachEnglish() {
+        self.setTeachFunction(EnglishClass())
+    }
+}
+
+
+let mathroom : MathClassRoom = MathClassRoom()
+mathroom.teachMath()
+mathroom.publish()
+
+let englishRoom :EnglishClassRoom = EnglishClassRoom()
+englishRoom.teachEnglish()
+englishRoom.publish()
+ 
+```
+我把Strategy封装成接口（ps把需要抽象的方法做成接口，是个非常明智的选择，这恰恰也是接口存在的意义）然后写了两个不同的锦囊类。分别实现了teach方法用来教课。
+
+下面就是需要把不同的教室分配为不同的职能了。于是，应该发生的样子应该是数学教师用来教数学，英文教室教英文。
+
+把教室抽象出来并且给教室一个『锦囊』属性让教室在想设置这个教室职能的时候可以设置。（当然这种设置可以放在任何初始化内部对象的地方比如init方法，set方法之类的）。
+教室还有一个职能就是让这个『锦囊』有用（也就是调用这个实例的方法）
+
+这里很好的看到了，我把整个程序分割成两个部分。
+1. 锦囊 
+2. 手持锦囊的一群东西
+
+这就是Strategy模式。
+记住的是，你在编码的时候发现什么被经常改动。如果改动的是方法，记得使用接口封装他们。如果改动的是数据结构，我们下次再说用什么。
+
+-----------
+##同胞兄弟 Factory Pattern
+### defalut factory pattern
+为什么要在一起说这两个pattern呢，因为我觉得从结构上来看他们很像，可以一起**横向对比**。
+照例我们还是先从名字入手，factory，没啥好介绍的。名词:工厂。也就是说，我们可以通过这个『工厂』来『制造』并且产出『产品』，这里的『产品』就是我们想要批量生产或者方便添加的类。
+有上述可以得到，我们在这个模式中需要定义产品对象。自然而然的，我们需要定义接口来指导行为。
+
+```
+// 简单工厂模式样例
+/* ------- */
+/// 这是产品类
+protocol Operators {
+    func perform()
+}
+
+class Addition: Operators {
+    func perform() {
+        print("做加法")
+    }
+}
+
+class Minies: Operators {
+    func perform() {
+        print("做减法")
+    }
+}
+
+class Divice: Operators {
+    func perform() {
+        print("做除法")
+    }
+}
+
+class Mutiple: Operators {
+    func perform() {
+        print("做乘法")
+    }
+}
+
+enum operatorsEnum {
+    case Add, Minie, Divice, Mutiple
+}
+```
+由此可见，这个产品的模板其实和策略模式的策略类的表现形式如出一辙。继续看工厂类的实现
+```
+class OperatorsFactory {
+    func createOperatorWithType(operat: operatorsEnum) -> Operators {
+        var operators : Operators
+        switch operat{
+        case .Add :
+            operators = Addition()
+        case .Divice:
+            operators = Divice()
+        case .Minie:
+            operators = Minies()
+        case .Mutiple:
+            operators = Mutiple()
+        }
+        return operators
+    }
+}
+```
+作为简单工厂，只需要一个函数来产生不同的产品，通过接口来使用『里氏替换原则』接受所有的产品类型，返回产品实例。
+最后看一下使用方法。
+
+```
+class User {
+    var factory: OperatorsFactory
+    init(operaFactory: OperatorsFactory) {
+        self.factory = operaFactory
+    }
+    
+    func perfromWithType(opType: operatorsEnum) {
+        let weapon: Operators = factory.createOperatorWithType(opType)
+        weapon.perform()
+    }
+}
+
+let users = User(operaFactory: OperatorsFactory())
+users.perfromWithType(.Add)
+users.perfromWithType(.Minie)
+```
+首先使用者类中，存在一个组合的工厂类的实例（这样一点又和策略模式的角色类的实现相同），然后有一个方法（createOperatorWithType :opType）通过外部的产品类型返回实例，直接调用这个实例的方法（以转换为用户类的方法）
+### Factory Method Pattern
+> **变量就是类，类和变量的相互转化**
+
+老生常谈了，我们还是从名字开始入手，『工厂方法』这名字可能说明不了什么问题（比较像中国人起的名字）
+
+> 工厂方法模式(Factory Method Pattern)又称为工厂模式，也叫**虚拟构造器**(Virtual Constructor)模式或者**多态工厂**(Polymorphic Factory)模式，
+
+Virtual Constructor Pattern和Polymorphic Factory Pattern这两个名字就很能说明问题了。
+在计算机科学里面常常有人喜欢说Virtual这个词，『虚拟化』听上去就很牛逼，基本上看到这个词的时候就知道这个人是把什么东西抽象成一个抽象描述了，而在代码实现中接口就是这种抽象描述。再看看Polymorphic Factory就能知道这个『工厂』可能是很多的。（一般这种很多的东西，就是通过不同的类来分割职能，所以需要使用接口把他们统一起来）
+
+来我们使用Virtual constructor 重构上面的简单工厂看看。
+
+```
+class OperationDecorator: Operators {
+    var operat: Operators! = nil
+    init(opera: Operators) {
+        self.operat = opera
+    }
+    func perform() -> String{
+        return operat.perform()
+    }
+}
+
+class DoubleDecorator: OperationDecorator {
+    override func perform() -> String{
+        return "浮点数" + self.operat.perform()
+    }
+}
+
+class IntDecorator: OperationDecorator {
+    override func perform() -> String {
+        return "整数" + self.operat.perform()
+    }
+}
+
+```
+这里写了两个产品，
+
+```
+protocol OperationUser {
+    func performfWithType(operationType: operatorsEnum)
+    func createOperaWithType(operationType: operatorsEnum) -> Operators!
+}
+
+extension OperationUser {
+    func performfWithType(operationType: operatorsEnum) {
+        let opt: Operators! = createOperaWithType(operationType)
+        print(opt.perform())
+    }
+}
+
+class DoubleUser: OperationUser {
+    func createOperaWithType(operationType: operatorsEnum) -> Operators! {
+        var opt: Operators
+        switch operationType {
+        case .Add:
+            opt = DoubleDecorator(opera: Addition())
+        case .Divice:
+            opt = DoubleDecorator(opera:  Divice())
+        case .Minie:
+            opt = DoubleDecorator(opera:  Minies())
+        case .Mutiple:
+            opt = DoubleDecorator(opera:  Mutiple())
+        }
+        return opt
+    }
+}
+
+var user: OperationUser = DoubleUser()
+
+user.performfWithType(.Add)
+```
+###Abstract Factory Pattern
+抽象工厂模式的主要作用就是把上述的工厂类的方法抽象成接口。我们直接看代码。
+```
+protocol WeaponType {
+    func fire() -> String
+}
+
+class AK: WeaponType {
+    func fire() -> String {
+        return "AK: Fire"
+    }
+}
+
+class AWP: WeaponType {
+    func fire() -> String {
+        return "AWP: Fire"
+    }
+}
+
+class HK: WeaponType {
+    func fire() -> String {
+        return "HK: Fire"
+    }
+}
+
+class WeaponDecorator: WeaponType {
+    var weapon: WeaponType! = nil
+    init(weapon: WeaponType) {
+        self.weapon = weapon
+    }
+    
+    func fire() -> String {
+        return weapon.fire()
+    }
+}
+
+class GermanyDecorator: WeaponDecorator {
+    override func fire() -> String {
+        return "德国制造" + self.weapon.fire()
+    }
+}
+
+
+class AmericaDecorator: WeaponDecorator {
+    override func fire() -> String {
+        return "美国制造" + self.weapon.fire()
+    }
+}
+
+/**
+ *  抽象工厂接口
+ */
+protocol WeaponFactoryType {
+    func createAK() -> WeaponType
+    func createAWP() -> WeaponType
+    func createHK() -> WeaponType
+}
+
+/// 抽象工厂的具体类实现
+
+class AmericanWeaponFactory: WeaponFactoryType {
+    func createAK() -> WeaponType {
+        return AmericaDecorator(weapon: AK())
+    }
+    
+    func createHK() -> WeaponType {
+        return AmericaDecorator(weapon: HK())
+    }
+    
+    func createAWP() -> WeaponType {
+        return AmericaDecorator(weapon: AWP())
+    }
+}
+
+class GermanyWeaponFactory: WeaponFactoryType {
+    func createAWP() -> WeaponType {
+        return GermanyDecorator(weapon: AWP())
+    }
+    
+    func createHK() -> WeaponType {
+        return GermanyDecorator(weapon: HK())
+    }
+    
+    func createAK() -> WeaponType {
+        return GermanyDecorator(weapon: AK())
+    }
+}
+
+enum WeaponTypeEnumeration {
+    case AK, AWP, HK
+}
+
+class WeaponUser {
+    private var factory: WeaponFactoryType
+    init(factory: WeaponFactoryType) {
+        self.factory = factory
+    }
+    
+    func setFactory(factory: WeaponFactoryType) {
+        self.factory = factory
+    }
+    
+    func fireWithType(weaponType: WeaponTypeEnumeration) {
+        var weapon: WeaponType
+        switch weaponType {
+        case .AK:
+            weapon = self.factory.createAK()
+        case .AWP:
+            weapon = self.factory.createAWP()
+        case .HK:
+            weapon = self.factory.createHK()
+        }
+        
+        print(weapon.fire())
+    }
+}
+
+
+var user: WeaponUser = WeaponUser(factory: AmericanWeaponFactory())
+
+user.fireWithType(.AWP)
+user.fireWithType(.HK)
+
+user.setFactory(GermanyWeaponFactory())
+print("\n")
+user.fireWithType(.AWP)
+user.fireWithType(.HK)
+
+```
+上述代码和工厂方法模式对于user的封装基本相同，都是组合一个工厂，只是这次的是一个抽象的接口，上次是类。
+### 工厂方法和抽象工厂模式的异同
+其实抽象工厂是通过接口来产生工厂的集合，而工厂方法会选取工厂来『生产』
+```
+/**
+ *  对使用者抽象
+ */
+protocol WeaponUserType {
+    func fireWithType(weaponType: WeaponTypeEnumeration)
+    func createWeaponWithType(weaponType: WeaponTypeEnumeration) -> WeaponType!
+    func createWeaponFactory() -> WeaponFactoryType
+}
+
+extension WeaponUserType {
+    func fireWithType(weaponType: WeaponTypeEnumeration) {
+        let weapon: WeaponType = createWeaponWithType(weaponType)
+        print(weapon.fire())
+    }
+    
+    func createWeaponWithType(weaponType: WeaponTypeEnumeration) -> WeaponType! {
+        var weapon: WeaponType
+        
+        switch weaponType {
+        case .AK:
+            weapon = createWeaponFactory().createAK()
+        case .AWP:
+            weapon = createWeaponFactory().createAWP()
+        case .HK:
+            weapon = createWeaponFactory().createHK()
+        }
+        
+        return weapon
+    }
+}
+
+class AmericanWeaponUser: WeaponUserType {
+    func createWeaponFactory() -> WeaponFactoryType {
+        return AmericanWeaponFactory()
+    }
+}
+
+class GermanyWeaponUser: WeaponUserType {
+    func createWeaponFactory() -> WeaponFactoryType {
+        return GermanyWeaponFactory()
+    }
+}
+
+var usr: WeaponUserType = AmericanWeaponUser()
+usr.fireWithType(.AK)
+```
+在这里工厂方法模式的具体实现就是User接口实现类的`func createWeaponFactory() -> WeaponFactoryType`方法。通过不同类对于这个方法的实现，实现工厂的选取，选取工厂是在`var usr: WeaponUserType = AmericanWeaponUser()`产生的。
+
+参考链接
+[逍遥游](http://so.gushiwen.org/guwen/bookv_3254.aspx)
+[策略模式](http://design-patterns.readthedocs.io/zh_CN/latest/behavioral_patterns/strategy.html)
+[参考博客Swift实现]( http://www.cnblogs.com/ludashi/p/5302269.html)
+

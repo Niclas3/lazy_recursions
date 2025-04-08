@@ -1,0 +1,72 @@
+---
+title: 总结OSX上面配置VIM + slimv的common Lisp环境
+updated: 2014-02-23
+---
+
+前言
+========================================
+作者本人是一个vim使用者，一直想学函数式的语言于是就挑了Common Lisp，可是问题是CL对vim支持不想Emacs这么好，不过爱折腾的我肯定不会罢休的。
+
+如果你急着配置你的环境请移步**总结**  
+准备工作
+------
+1.Python环境（作者使用的是Python 2.7.x的版本）
+
+2.重新编译的Vim需要支持Python
+
+3.下载slimv的插件
+
+折腾过程
+------
+
+作者在这些准备齐全过后按照[官网][1]上面的介绍解压到.vim文件夹之后使用“,c”这个快捷键呼出STREAM结果没有任何反应。然后我就在作者制作的[Slimv Tutorial][2]第一篇里面看到原来需要一个common Lisp的编译器于是连忙用Home brew下了sbcl 
+
+`brew install sbcl`
+
+安装完sbcl之后很明显还是不能用(╯‵□′)╯︵┻━┻于是我就在怀疑是不是我的VIM的配置的问题果然我又在[Tutorial][2]里面找到了可能需要在.vimrc文件里面添加一段代码
+
+>On Linux this can be something like:
+
+>let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
+
+这里我只介绍怎么在Mac的环境里面配置所以就不管别的平台下面的配置了所以我在我的.vimrc文件里面添加了作者给的代码
+
+`let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
+`
+
+我们可以简单的看一下这个代码貌似是用一个终端控制台在后台开启什么东西的样子（其实是在后台开启slime这个我们后面会知道）。于是我填了代码之后还是没有什么用处。好吧，于是我就求助了Baidu和Google这两个大神了，得到的结果很不理想，基本上common Lisp环境配置都是在Emacs上面的只有很少的页面是讲怎么在OSX上面配置VIM+slimv的兜兜转转我在豆瓣的读书笔记里面找到[这篇][3]文章，从笔记里面我知道原来不能用terminal里面的vim来使用slimv，其实好像是可以的只要加上`set guioptions+=m`来打开菜单就能使用了（我的打不开也不知道为什么有知道的vimer记得告诉我，谢谢）言归正传，知道不能在终端打开vim我只能用Macvim来代替了，果然使用了MacVim之后就可以看到菜单栏里面的slimv的选项菜单了，但是（我已经不想看到这个词了）还是不能用，不过根据上面的笔记来说，我猜我这里出的问题可能是我的MacVim不支持Python于是我准备下一下MacVim的[源代码][4]来自己编译**具体编译流程url里面很详细**。
+
+经过一会编译出来符合要求**支持Python和是32位的vim**的MacVim后再实验还是不可以。
+于是我就想会不会是common Lisp的编译器的问题于是我用**Home brew**下载了ccl`brew install Clozure CL`
+
+把在.vimrc里面的脚本改成`let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""'`
+
+再运行终于可以了。
+~\(≧▽≦)/~
+
+总结
+---
+这次对slimv的折腾，几番周折，主要没有中文的资料很麻烦后来在[douban笔记][3]里面找到了资料真的需要感谢下这个作者。
+我在梳理一下
+
+* 你需要一个支持Python和32位的MacVim （你可能需要自己编译[这里][4]了解细节）
+* 你需要一个Python的运行环境
+* 你需要下载slimv的插件并且解压到.vim文件夹里`unzip xxx.zip -d ~/.vim`（[这里][1]下载）
+* 你需要一个ccl的common Lisp的解释器 `brew install Clozure CL`
+* 在你的.vimrc文件里面添加`let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""'`（这不是必须得）
+* 最后打开你的MacVim跟着作者的[tutorial][2]来学习使用吧
+
+最后，希望我的文章能给爱折腾的你一点用，希望你们能坚持common Lisp的学习，与你共勉
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/cn/80x15.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
+**本文章遵循CC协议，请自觉遵守    -作者Niclas**
+
+2013-12-30 20:00
+
+
+[1]:(http://www.vim.org/scripts/script.php?script_id=2531)
+[2]:(http://kovisoft.bitbucket.org/tutorial.html)
+[3]:(http://book.douban.com/annotation/15415332/)
+[4]:(https://code.google.com/p/macvim/wiki/Building)
+
