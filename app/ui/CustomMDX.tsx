@@ -14,37 +14,22 @@ import rehypeMathjax from 'rehype-mathjax'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 
+// for table elements suppport 
+// more info to see https://mdxjs.com/guides/gfm/
+import remarkGfm from 'remark-gfm'
 import 'katex/dist/katex.min.css'
 
 
 const options = {
         mdxOptions: {
-                remarkPlugins: [remarkMath],
+                remarkPlugins: [remarkMath, remarkGfm],
                 rehypePlugins: [rehypeKatex, rehypeHighlight, rehypeMathjax]
         }
 
 }
 
-function Table({ data }: { data: React.ReactNode }) {
-  let headers = data.headers.map((header, index:number) => (
-    <th key={index}>{header}</th>
-  ))
-  let rows = data.rows.map((row, index:number) => (
-    <tr key={index}>
-      {row.map((cell, cellIndex) => (
-        <td key={cellIndex}>{cell}</td>
-      ))}
-    </tr>
-  ))
-
-  return (
-    <table>
-      <thead>
-        <tr>{headers}</tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
-  )
+function Table({children}:any) {
+        return children
 }
 
 function CustomLink(props:any) {
@@ -144,7 +129,7 @@ let components = {
   a: CustomLink,
   code: InlineCode,
   pre: MutilineCode,
-  // Table,
+  // table : Table,
 }
 
 const ext_components = { More_info, MermaidDiagram }

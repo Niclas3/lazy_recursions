@@ -29,8 +29,10 @@
     "rehype-highlight": "^7.0.2",
     "rehype-katex": "^7.0.1",
     "rehype-mathjax": "^7.1.0",
+    "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-mdx-math-enhanced": "^0.0.1-beta.3",
+    "sugar-high": "^0.9.3",
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
