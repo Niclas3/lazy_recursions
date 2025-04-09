@@ -1,24 +1,23 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import { highlight } from 'sugar-high'
 import React from 'react'
 
 import  More_info   from "@/app/ui/More_info"
 import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
 
-
-// for Latex
+// For Latex
 import rehypeHighlight from 'rehype-highlight'
 import rehypeMathjax from 'rehype-mathjax'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 
-// for table elements suppport 
+// For table elements suppport 
 // more info to see https://mdxjs.com/guides/gfm/
 import remarkGfm from 'remark-gfm'
 import 'katex/dist/katex.min.css'
 
+// For <pre></pre> formatting
 
 const options = {
         mdxOptions: {
@@ -74,8 +73,9 @@ function InlineCode ({ children, className = 'bg-gray-200 rounded-sm px-1 font-m
   return <code className={` ${className}`}>{children}</code>;
 };
 
+
 function MutilineCode({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any){
-  return <pre className={` ${className}`}>{children}</pre>;
+        return <div> { children } </div>
 }
 
 function slugify(str:any) {
