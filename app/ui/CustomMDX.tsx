@@ -74,14 +74,7 @@ function InlineCode ({ children, className = 'bg-gray-200 rounded-sm px-1 font-m
 
 
 function MutilineCode({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any){
-        const code = `
-import { Code } from '@mantine/core';
-
-function Demo() {
-  return <Code>React.createElement()</Code>;
-}
-        `
-        return <Code block> {code} </Code>
+        return <Code block className = {className}> {children} </Code>
 }
 
 function slugify(str:any) {
@@ -100,7 +93,6 @@ function createHeading(level:number) {
         const validLevel = Math.max(1, Math.min(6, level));
         let slug = slugify(children)
         const headingClassName = `font-semibold tracking-tighter ${className}`
-        const textSizeClass = `text-${3 - validLevel+ 3}xl`;
 
         return <Title order={ validLevel as TitleOrder }> { children } </Title>
   };
@@ -126,7 +118,6 @@ const ext_components = { More_info, MermaidDiagram, Capture_image }
 
 export function CustomMDX(props:any) {
   return (
-
     <MDXRemote
       {...props}
       components={{...components , ...ext_components }}
