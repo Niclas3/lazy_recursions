@@ -3,29 +3,6 @@ import {notFound} from 'next/navigation'
 import { getBlogPost} from "@/lib/load_posts"
 import type {Metadata, Post } from "@/lib/load_posts"
 
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import  More_info   from "@/app/ui/More_info"
-import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
-
-const components = { More_info, MermaidDiagram }
-
-// for Latex
-import rehypeHighlight from 'rehype-highlight'
-import rehypeMathjax from 'rehype-mathjax'
-import rehypeKatex from 'rehype-katex'
-import remarkMath from 'remark-math'
-
-import 'katex/dist/katex.min.css'
-
-
-const options = {
-        mdxOptions: {
-                remarkPlugins: [remarkMath],
-                rehypePlugins: [rehypeKatex, rehypeHighlight, rehypeMathjax]
-        }
-
-}
-
 import { CustomMDX } from '@/app/ui/CustomMDX'
 import { serialize } from 'next-mdx-remote/serialize'
 
@@ -73,11 +50,12 @@ export default async function Post({ params }:
 
         return (
                 <>
+
                 <h1 className="title font-semibold text-2xl tracking-tighter">
                         {post.metadata.title}
                 </h1>
 
-                <CustomMDX source={text} options={options} components ={components}>
+                <CustomMDX source={text} >
 
                 </CustomMDX>
 
