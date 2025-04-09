@@ -26,11 +26,7 @@ const options = {
 
 }
 
-import {CustomMDX, CustomMDXProvider } from '@/app/ui/CustomMDX'
-// <CustomMDX source={post.content} options={options} components ={components}/>
-//
-                // <CustomMDX {...mdx_source } options={options} components ={components}>
-                // </CustomMDX>
+import { CustomMDX } from '@/app/ui/CustomMDX'
 import { serialize } from 'next-mdx-remote/serialize'
 
 export default async function Post({ params }:
