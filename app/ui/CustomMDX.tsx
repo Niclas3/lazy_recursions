@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import React from 'react'
 
 import  More_info   from "@/app/ui/More_info"
 import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
+import  Capture_image  from "@/app/ui/Capture_image"
 
 // For Latex
 import rehypeHighlight from 'rehype-highlight'
@@ -17,8 +17,9 @@ import remarkMath from 'remark-math'
 import remarkGfm from 'remark-gfm'
 import 'katex/dist/katex.min.css'
 
-// For <pre></pre> formatting
 
+import { Code, Title, Image } from '@mantine/core'
+import type { TitleOrder } from '@mantine/core'
 const options = {
         mdxOptions: {
                 remarkPlugins: [remarkMath, remarkGfm],
@@ -60,22 +61,27 @@ function CustomLink(props:any) {
 }
 
 function RoundedImage(props:any) {
-const src = props.src
-const alt = props.alt
-const caption = "caption"
-  return <div>
-          <img src={src} alt={alt} className="rounded-xl" />
-          <p className="text-center">{caption}</p>
-        </div>
+        const src = props.src
+        const alt = props.alt
+        return (
+                <Image radius='md' src = {src}/>
+        );
 }
 
 function InlineCode ({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any) {
-  return <code className={` ${className}`}>{children}</code>;
+        return <Code > {children} </Code>
 };
 
 
 function MutilineCode({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any){
-        return <div> { children } </div>
+        const code = `
+import { Code } from '@mantine/core';
+
+function Demo() {
+  return <Code>React.createElement()</Code>;
+}
+        `
+        return <Code block> {code} </Code>
 }
 
 function slugify(str:any) {
@@ -95,24 +101,8 @@ function createHeading(level:number) {
         let slug = slugify(children)
         const headingClassName = `font-semibold tracking-tighter ${className}`
         const textSizeClass = `text-${3 - validLevel+ 3}xl`;
-        const Tag = `h${validLevel}`
 
-        switch (validLevel) {
-                case 1:
-                        return <h1 className={`text-3xl ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h1>;
-                case 2:
-                        return <h2 className={`text-2xl ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h2>;
-                case 3:
-                        return <h3 className={`text-xl ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h3>;
-                case 4:
-                        return <h4 className={`text-lg ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h4>;
-                case 5:
-                        return <h5 className={`text-base ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h5>;
-                case 6:
-                        return <h6 className={`text-sm ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h6>;
-                default:
-                        return <h1 className={`text-3xl ${headingClassName}`} ><a href={`#${slug}`} className="anchor">{children}</a></h1>;
-    }
+        return <Title order={ validLevel as TitleOrder }> { children } </Title>
   };
 
   return Heading
@@ -132,10 +122,11 @@ let components = {
   // table : Table,
 }
 
-const ext_components = { More_info, MermaidDiagram }
+const ext_components = { More_info, MermaidDiagram, Capture_image }
 
 export function CustomMDX(props:any) {
   return (
+
     <MDXRemote
       {...props}
       components={{...components , ...ext_components }}

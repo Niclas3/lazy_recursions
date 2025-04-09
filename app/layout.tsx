@@ -5,6 +5,14 @@ import { Footer } from './footer'
 import { ThemeProvider } from 'next-themes'
 import {noto_sans_sc} from '@/components/fonts';
 
+import '@mantine/core/styles.css'
+import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
+
+const theme = createTheme({
+        primaryColor: 'red',
+        autoContrast: true 
+})
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -24,23 +32,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+    <head>
+    <ColorSchemeScript/>
+    </head>
       <body
         className={`${noto_sans_sc.className } text-base bg-white tracking-tight antialiased dark:bg-zinc-950`}
       >
+      <MantineProvider theme={theme}>
+
         <ThemeProvider
           enableSystem={true}
           attribute="class"
           storageKey="theme"
           defaultTheme="light"
         >
+
           <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
             <div className="relative mx-auto w-full sm:max-w-screen-sm flex-1 px-4 pt-20">
               <Header />
-              {children}
+                {children}
               <Footer />
             </div>
           </div>
+
         </ThemeProvider>
+       </MantineProvider>
       </body>
     </html>
   )

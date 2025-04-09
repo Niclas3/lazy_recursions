@@ -1,10 +1,13 @@
 import { CustomMDX } from '@/app/ui/CustomMDX'
+import { Blockquote } from '@mantine/core'
+import { BookOpen } from 'lucide-react'
 
-export default function More_info({children}: {children: React.ReactNode }){
-    return (
-        <div className="bg-[#d0e7f9] text-[#4d4d4d] rounded-md p-3">
-               <CustomMDX source={children}>
-               </CustomMDX>
-        </div>
-    );
+export default function More_info({children, cite}: {children: React.ReactNode, cite: string }){
+        const icon = <BookOpen />;
+        return (
+                <Blockquote color="indigo" radius="lg" cite={cite ?? ""} icon={icon} mt="xl">
+                        <CustomMDX source={children}>
+                        </CustomMDX>
+                </Blockquote>
+        );
 }
