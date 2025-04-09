@@ -1,4 +1,5 @@
 import createMDX from '@next/mdx';
+import {withContentlayer} from 'next-contentlayer'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -10,4 +11,4 @@ const withMDX = createMDX({
   extension: /\.mdx?$/,
 });
 
-export default withMDX(nextConfig);
+export default withContentlayer(withMDX(nextConfig))
