@@ -1,15 +1,12 @@
 import {notFound} from 'next/navigation'
 
-import { getBlogPost} from "@/lib/load_posts"
-import type {Metadata} from "@/lib/load_posts"
 
 import { CustomMDX } from '@/app/ui/CustomMDX'
-import { serialize } from 'next-mdx-remote/serialize'
 
 import { allPosts, Post } from 'contentlayer/generated'
 import path from 'path'
 
-export default async function Post({ params }:
+export default async function Post_page({ params }:
                                    { 
                                         params: Promise<{category:string, title: string}>
                                    })
