@@ -51,7 +51,7 @@ tags: [ARTS]
 1. 存在最优子结构。每一项都是前两项的和
 2. 重叠子问题。    求第N项的时候可能重复计算前两项。
 
-<pre class="mermaid" style="text-align: center;">
+<MermaidDiagram>
 graph TD
     A["f(10)"] --> B["f(9)"]
     A --> C["f(8)"]
@@ -64,7 +64,7 @@ graph TD
     class E,F greenNode
     classDef blueNode fill:#aaaaff,stroke:#0000ff,stroke-width:2px;
     classDef greenNode fill:#aaccff,stroke:#00ffff,stroke-width:2px;
-</pre>
+</MermaidDiagram>
 算一下时间复杂度，也就是$\mathcal{O}()$,时间复杂度是单个子问题的处理时间乘以子问题个数。
 
 * 算第3项子问题有两个需要计算$f(1)$和$f(2)$.
@@ -93,13 +93,13 @@ int fib(int n) {
 
 时间消耗曲线如下
 
-<pre class="mermaid" style="text-align: center;">
+<MermaidDiagram>
 xychart-beta
     title "Fib(n) in O(2^n)"
     x-axis "number" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     y-axis "time cost (in ms)" 0.001 --> 0.081
     line [0.001,0.000,0.000,0.001,0.001,0.000,0.001,0.001,0.001,0.001,0.002,0.002,0.003,0.005,0.008,0.012,0.020,0.032,0.050,0.081]
-</pre>
+</MermaidDiagram>
 
 
 ## 自顶向下 - 备忘录
@@ -124,13 +124,13 @@ int fib_memo(int n, long *memo)
 }
 ```
 
-<pre class="mermaid" style="text-align: center;">
+<MermaidDiagram>
 xychart-beta
     title "Fib(n) in O(n)"
     x-axis "number" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     y-axis "time cost (in ms)" 0.001 --> 0.049
     line [0.049,0.003,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.000,0.001,0.001,0.001,0.001,0.001,0.001]
-</pre>
+</MermaidDiagram>
 你可能好奇为什么第一个数花这么久时间，这可能需要谈到计算机内存的知识，之后如果我有写文章会连接起来的。
 
 
@@ -167,13 +167,13 @@ long fib_bottomup(int n, long *memo)
         return memo[n];
 }
 ```
-<pre class="mermaid" style="text-align: center;">
+<MermaidDiagram>
 xychart-beta
     title "Fib(n) in bottom-up"
     x-axis "number" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     y-axis "time cost (in ms)" 0.001 --> 0.049
     line [0.040,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.000,0.001,0.001,0.001,0.000,0.001,0.001,0.001,0.001,0.001,0.001]
-</pre>
+</MermaidDiagram>
 
 这里会引入一个概念**状态转移方程**。这个词语相信有些人在**FSM有限状态机**里也听过，这两者虽然都描述着
 从一个状态到另一个状态的转移，但DP是通过递归关系从子问题和之前状态推算出现在子问题的解。而FSM是通过
@@ -206,13 +206,14 @@ long fib_bottomup_opt(int n, long *memo)
         return res;
 }
 ```
-<pre class="mermaid" style="text-align: center;">
-xychart-beta
-    title "Fib(n) in bottom-up with space optimization"
-    x-axis "number" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-    y-axis "time cost (in ms)" 0.000 --> 0.049
-    line [0.034,0.001,0.000,0.000,0.001,0.001,0.001,0.000,0.001,0.000,0.001,0.000,0.001,0.000,0.001,0.001,0.001,0.001,0.000]
-</pre>
+
+<MermaidDiagram>
+    xychart-beta
+        title "Fib(n) in bottom-up with space optimization"
+        x-axis "number" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+        y-axis "time cost (in ms)" 0.000 --> 0.049
+        line [0.034,0.001,0.000,0.000,0.001,0.001,0.001,0.000,0.001,0.000,0.001,0.000,0.001,0.000,0.001,0.001,0.001,0.001,0.000]
+</MermaidDiagram>
 
 
 
@@ -251,16 +252,16 @@ $ Fn=Fn-1 + Fn-2；n > 2 $
 我们试着看看能不能把这个问题的**规模缩小**试着看看能不能找到基本情况。
 
 假设总数是18元，可用的零钱集合是｛2，3，5｝<br/> 
-使用分解18元的策略（自顶向下）{这是贪心逻辑}
-1. 18元 ｛｝
-2. 13元 ｛5｝
+使用分解18元的策略（自顶向下）\{这是贪心逻辑\}
+1. 18元  ｛｝
+2. 13元  ｛5｝
 3. 08元  ｛5，5｝
 4. 03元  ｛5，5，5｝
 5. 00元  ｛5，5，5，3｝
 
 ---
 
-每一次从硬币堆中挑选一枚硬币，就会获得新的状态。{这是动态规划逻辑}
+每一次从硬币堆中挑选一枚硬币，就会获得新的状态。\{这是动态规划逻辑\}
 
 例如：
 * 18元的最优数量就相当于
@@ -271,39 +272,35 @@ $ Fn=Fn-1 + Fn-2；n > 2 $
 
 这样就会构成一个n叉树,n是零钱种类的数量。
 
-<pre class="mermaid" style="text-align: center;">
-graph TD
-    A["18"] --> B["16"]
-    A --> C["15"]
-    A --> D["13"]
-    B --> E["14"]
-    B --> F["13"]
-    B --> G["11"]
-    C --> H["..."]
-    D --> I["11"]
-    D --> J["10"]
-    D --> K["8"]
+<MermaidDiagram>
+    graph TD
+        A["18"] --> B["16"]
+        A --> C["15"]
+        A --> D["13"]
+        B --> E["14"]
+        B --> F["13"]
+        B --> G["11"]
+        C --> H["..."]
+        D --> I["11"]
+        D --> J["10"]
+        D --> K["8"]
 
     class F,D blueNode;
     class G,I greenNode
     classDef blueNode fill:#aaaaff,stroke:#0000ff,stroke-width:2px;
     classDef greenNode fill:#aaccff,stroke:#00ffff,stroke-width:2px;
-</pre>
+</MermaidDiagram>
 
+<More_info>
+    这里使用贪心算法的逻辑来看，子问题不独立
+    F(n) = F(n-1) $\cap$｛当前最优的一枚硬币类型｝;n >= 1
+</More_info>
 
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
-这里使用贪心算法的逻辑来看，子问题不独立 
-<br/>
-F(n) = F(n-1) $\cap$｛当前最优的一枚硬币类型｝；n >= 1
-</div>
-<div style="padding:10px;"></div>
-
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
-但是使用动态规划的逻辑来看，子问题互相独立
-<br/>
-F(n) = min(F(n-k\[...\]) ) + 1;
-k就是零钱的种类数量
-</div>
+<More_info>
+    但是使用动态规划的逻辑来看，子问题互相独立
+    F(n) = min(F(n-k\[...\]) ) + 1;
+    k就是零钱的种类数量
+</More_info>
 
 需要感受一下这里的区别。
 
