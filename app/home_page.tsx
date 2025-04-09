@@ -16,6 +16,7 @@ import { SOCIAL_LINKS } from './data'
 
 import type { Project, BlogPost } from '@/app/data'
 
+
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
   visible: {
@@ -127,6 +128,7 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<any
       initial="hidden"
       animate="visible"
     >
+
     {/*<Spotlight className="bg-black dark:bg-white"/>*/}
       <motion.section
         variants={VARIANTS_SECTION}

@@ -15,6 +15,8 @@ export default async function Post({ params }:
         const title = (await params)?.title;
 
         const post:{metadata: Metadata; content: string} | undefined = getBlogPost(decodeURIComponent(category), decodeURIComponent(title))
+        
+
         if(!post) {
                 notFound();
         }
@@ -26,7 +28,6 @@ export default async function Post({ params }:
         #### h4
         ##### h5
         ###### h6
-        <More_info> # h1_in_More_info </More_info> 
         \`let a = 10;\`
 
         [baidu](http://www.baidu.com)
@@ -36,6 +37,10 @@ export default async function Post({ params }:
         \`\`\`c
         #include <stdio.h>
         \`\`\`
+
+        <Capture_image src="https://cdn.cosmos.so/affd4b79-e848-4dfd-bd42-5f2c4a847365?format=jpeg" alt="alt-test" capture="this is capture" />
+
+        <More_info> # h1_in_More_info </More_info> 
 
         ![out url](https://cdn.cosmos.so/affd4b79-e848-4dfd-bd42-5f2c4a847365?format=jpeg)
         ![this is image](/cover.jpg)
