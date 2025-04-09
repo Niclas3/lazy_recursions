@@ -134,7 +134,7 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<any
       >
         <div className="flex-1">
           <p className="text-zinc-600 dark:text-zinc-400">
-            Focused on Linux and homebrew operating system. good at C, can do some font-end things.
+            Focused on Linux and homebrew operating system. good at C, can do some front-end things.
           </p>
         </div>
       </motion.section>
