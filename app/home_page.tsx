@@ -14,8 +14,9 @@ import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { SOCIAL_LINKS } from './data'
 
-import type { Project, BlogPost } from '@/app/data'
+import type { Project } from '@/app/data'
 
+import { Post } from 'contentlayer/generated'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -120,7 +121,7 @@ function MagneticSocialLink({
   )
 }
 
-export default function Home_page({blog_posts, projects}:{blog_posts : Array<any>, projects: Array<Project>}) {
+export default function Home_page({blog_posts, projects}:{blog_posts : Array<Post>, projects: Array<Project>}) {
   return (
     <motion.main
       className="space-y-24"
@@ -187,19 +188,19 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<any
               duration: 0.2,
             }}
           >
-            { blog_posts.map((post:BlogPost) => (
+            { blog_posts.map((post:Post, index:number) => (
               <Link
-                key={post.uid}
+                key={index}
                 className="-mx-3 rounded-xl px-3 py-3"
-                href={post.link}
-                data-id={post.uid}
+                href={post.url}
+                data-id={post._id}
               >
                 <div className="flex flex-col space-y-1">
                   <h4 className="font-normal dark:text-zinc-100">
                     {post.title}
                   </h4>
                   <p className="text-zinc-500 dark:text-zinc-400">
-                    {post.description}
+                    {post.description ?? ""}
                   </p>
                 </div>
               </Link>

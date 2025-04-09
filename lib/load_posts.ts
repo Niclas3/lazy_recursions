@@ -68,12 +68,6 @@ export function getBlogPost(categories:string, filename:string){
         return readMDXFile(post_path)
 }
 
-type BlogPost = {
-  title: string
-      description: string
-      link: string
-  uid: string
-}
 
 export function getBlogPostsName() {
   const posts_dir = path.join(process.cwd(), 'posts')
@@ -91,55 +85,7 @@ export function getBlogPostsName() {
                  })
 }
 
-function isDirectory(filePath:string) {
-  try {
-    const stat = fs.statSync(filePath);
-    return stat.isDirectory();
-  } catch (error) {
-    return false;
-  }
-}
 
-function is_tmp(file_path:string){
-  return path.basename(file_path) !== "tmp"
-}
-
-function get_blogs_from_dir(dir_path:string){
-        return fs.readdirSync(dir_path)
-                 .filter((post_path)=>{
-                         return path.extname(post_path) === '.mdx'
-                 })
-                 .map((post_name)=>{
-                        const post_path= path.join(dir_path, post_name)
-                        const {metadata, content} = readMDXFile(post_path)
-                        const cate_name = path.basename(dir_path)
-                        let slug = '/blog/'+`${cate_name}/` + path.basename( post_name, path.extname(post_name))
-
-                        return { metadata, slug, content, }
-                 })
-}
-
-export function getBlogPostsMeta(){
-  const posts_dir = path.join(process.cwd(), 'posts')
-        return fs.readdirSync(posts_dir)
-                 .filter((name)=>{
-                         return isDirectory(path.join(posts_dir, name)) && !is_tmp(name)
-                 })
-                 .map((post)=>{
-                         const post_cate_path = path.join(posts_dir, post)
-                         const t = get_blogs_from_dir(post_cate_path)
-                         return t
-                 })
-                 .flat(1)
-                 .map((post, index)=>{
-                                 return {
-                                         title : post.metadata.title,
-                                         description: post.metadata.summary??"", 
-                                         link : post.slug, 
-                                         uid : index
-                                 }
-                         })
-}
 
 export function formatDate(date: string, includeRelative = false) {
   let currentDate = new Date()
