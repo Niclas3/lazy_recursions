@@ -1,6 +1,7 @@
 ---
 title: 新造的轮子
 updated: Wed Nov 20 17:25:11 CST 2024
+date: Wed Nov 20 17:25:11 CST 2024
 categories : [program, nvim]
 ---
 
@@ -17,14 +18,16 @@ ED 出现了。1960s-70s的计算机使用者大多数是学者或者军事人�
 号只有几KB的内存，由于内存限制没法把所有文本都载入内存，所以当时的文本编辑器是
 **行编辑**(line-oriented) 或者是**面向字符编辑**(character-oriented)。  
 
-![PDP-1](https://upload.wikimedia.org/wikipedia/commons/f/f0/DEC_PDP-1_Demo_Lab_at_Mountain_View%27s_Computer_History_Museum.jpg)
-> 上图就是PDP-1的样子，桌面上类似打字机的设备就是teletype  
 
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
+<Capture_image src="https://upload.wikimedia.org/wikipedia/commons/f/f0/DEC_PDP-1_Demo_Lab_at_Mountain_View%27s_Computer_History_Museum.jpg"
+               alt="PDP-1的样子，桌面上类似打字机的设备就是teletype"
+               capture="PDP-1,桌面上类似打字机的设备就是teletype" />
+
+<More_info>
 这里我想到一个题外话60年代也是UNIX的出现的年代，
 UNIX比较有特点的是它以字符串作为程序间交互的介质而不是数据结构
 也许也受限于当时的内存大小。
-</div>
+</More_info>
 
 ### [TECO](https://en.wikipedia.org/wiki/TECO_(text_editor))
 1962年，TECO(Text Editor & Corrector)是在PDP-1机器上**面向字符(character-oriented)**
@@ -37,10 +40,10 @@ YAFIYGI 反应了早期编辑器的设计哲学
 * 编辑器不会纠正用户的错误
 这种设计哲学强调了用户对操作负责。强调功能的同时也兼具了效率。
 
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
+<More_info>
 一定程度上TECO这个哲学和,C语言相信程序员的C代码哲学相似，这种哲学是有意为之还是
 条件所迫呢？
-</div>
+</More_info>
 
 ### [QED](https://en.wikipedia.org/wiki/QED_(text_editor))
 1965-1966年，在加州伯克利大学开发的Berkeley Timesharing System上由Butler Lampson 、
@@ -53,9 +56,12 @@ QED也对后来的文本编辑器例如 *sed* 、*ex* 、*awk* 、*perl*有着�
 交互式计算设备，分时系统和UNIX也给多个用户共享计算机资源提供了支持，也促进了交互
 式工具的发展，慢慢的面向行编辑的编辑器就不能满足对完整文件操作的需求了
 
-![IBM S360](https://upload.wikimedia.org/wikipedia/commons/a/af/DM_IBM_S360.jpg)
-> 上图就是大型机时代开山之作**IBM System/360 Model 20**，IBM当时项目负责人Frederick P. Brooks,
-> Jr.根据此项目的开发经验写出了[《人月神话：软件项目管理之道》](https://en.wikipedia.org/wiki/The_Mythical_Man-Month)
+> IBM当时项目负责人Frederick P. Brooks Jr.根据此项目的开发经验写出了[《人月神话：软件项目管理之道》](https://en.wikipedia.org/wiki/The_Mythical_Man-Month)
+
+<Capture_image src="https://upload.wikimedia.org/wikipedia/commons/a/af/DM_IBM_S360.jpg"
+               alt="大型机时代开山之作**IBM System/360 Model 20**，IBM当时项目负责人Frederick P. Brooks"
+               capture="大型机时代开山之作IBM System/360 Model 20" />
+
 
 ### [Vi](https://en.wikipedia.org/wiki/Vi_(text_editor))和[Ex](https://en.wikipedia.org/wiki/Ex_(text_editor))
 1976年UC Berkeley的学生**Bill Joy**，在修改当时UNIX系统上的Pascal编译器发现ed编辑器实
@@ -65,27 +71,28 @@ QED也对后来的文本编辑器例如 *sed* 、*ex* 、*awk* 、*perl*有着�
 示功能的 ex，而**vi(VIsual mode)**的名字就是ex的一个全屏幕显示模式的前两个字母。1979
 年因为大多是人只使用ex的Vi模式,Bill Joy就给ex的Vi模式创建一个快捷方式，这就是后世
 知道的Vi的起源了。
+ 
 
-![ADM-3A](https://upload.wikimedia.org/wikipedia/commons/7/77/Adm3aimage.jpg)
-> 上图就是Bill 当时开发Vi的时候使用的设备 还是可以辨认出hjkl上是有方向键的
+<Capture_image src="https://upload.wikimedia.org/wikipedia/commons/7/77/Adm3aimage.jpg"
+               alt="上图就是Bill 当时开发Vi的时候使用的设备 还是可以辨认出hjkl上是有方向键的"
+               capture="上图就是Bill 当时开发Vi的时候使用的设备 还是可以辨认出hjkl上是有方向键的" />
 
 由于Bill Joy使用[ADM-3A](https://en.wikipedia.org/wiki/ADM-3A)开发Vi，所以Vi的按键映射和ADM-3A的键盘一致
 这个时期的Vi只有基本的移动命令(hjkl)操作命令和行范围操作
 
 ### [sed](https://en.wikipedia.org/wiki/Sed)
 作为一个最早支持正则表达式的文字处理软件,sed继承了ed和qed的交互模式
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
+<More_info>
 我这里想写一些注脚，sed、awk和perl作为常用的字处理程序直到现在都被运维们长时间使用
-</div>
+</More_info>
 
 ## 黄金时代 (1980s-1990s)
 1980s-1990s这个时期是计算机技术的黄金时代，所有现在使用的基础技术都是在这个时代奠基
 然后发展的。
 
-![IBM Personal Computer](https://upload.wikimedia.org/wikipedia/commons/a/a6/IBM_PC-IMG_7271_%28transparent%29.png)
-
-> 上图就是IBM PC搭载了Intel的畅销CPU intel8088 @ 4.77MHz 最高可扩展出640KB的内存
-> 空间,也搭载了一个CGA用于显示图像，当时售价US$1,565
+<Capture_image src="https://upload.wikimedia.org/wikipedia/commons/a/a6/IBM_PC-IMG_7271_%28transparent%29.png"
+               alt="IBM PC搭载了Intel的畅销CPU intel8088 @ 4.77MHz 最高可扩展出640KB的内存空间,也搭载了一个CGA用于显示图像，当时售价US$1,565"
+               capture="IBM PC搭载了Intel的畅销CPU intel8088 @ 4.77MHz 最高可扩展出640KB的内存空间,也搭载了一个CGA用于显示图像，当时售价US$1,565" />
 
 硬件上,81年IBM推出了标志着个人计算机时代的**IBM PC**，著名的动画《[命运石之门](https://en.wikipedia.org/wiki/Steins;Gate)》
 中的未来人寻找的就是这个台机器。intel的x86系列也不断的在提升CPU的性能，硬盘容量
@@ -112,27 +119,34 @@ Vim是1991年由**Bram Moolenaar**发布的一款高度可配置的文本编辑�
 
 #### Vim：爸爸我是怎么出生的？
 Bram moolenaar是一个荷兰人，90年代的时候在一家印刷公司上班，当时他买了一台[Amiga](https://en.wikipedia.org/wiki/Amiga) 
-电脑以 {这里加一个amiga的图片}便学习UNIX,当时在Amiga上是没有好用的Vi，Bram
+电脑以便学习UNIX,当时在Amiga上是没有好用的Vi，Bram
 moolenaar 就在已经有的软件Stevie的基础上准备复刻Vi, 所以最开始Vim是Vi IMitation
 的简称，直到1992年Vim 1.22版本之后Vim正式移植到UNIX后改名为我们熟知的Vi IMproved。
 就这样Bram moolenaar参与了Vim从1991年发布第一版本到2023年的Vim8.0的开发维护工作直
 到他因病去世。
 
-![amiga](https://upload.wikimedia.org/wikipedia/commons/c/c3/Amiga500_system.jpg)
-> 当时bram 使用的个人电脑
+<Capture_image src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Amiga500_system.jpg"
+               alt="当时bram 使用的个人电脑"
+               capture="当时bram 使用的个人电脑" />
 
-<div style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
-就像Vim的名字一样(Vi IMproved)Vim是我们刚刚提到的bill joy开发的Vi的增强版。主要
-增加了10个features <br/>
 
-1. 多级撤销   2. 文本对象 <br/>
-3. 多窗口     4. 多缓冲区 <br/>
-5. 语法高亮   6. Visual mode <br/>
-7. 持久性撤销 8. 插件系统 <br/>
-9. 扩展了命令 10. 支持鼠标 <br/>
+就像**Vim**的名字一样(Vi IMproved)Vim是我们刚刚提到的bill joy开发的Vi的增强版。主要
+增加了10个features 
 
-关于Vim的功能都会单独文章介绍
-</div>
+    1. 多级撤销   
+    2. 文本对象 
+    3. 多窗口     
+    4. 多缓冲区
+    5. 语法高亮   
+    6. Visual mode
+    7. 持久性撤销 
+    8. 插件系统 
+    9. 扩展了命令 
+    10. 支持鼠标 
+
+<More_info>
+    关于Vim的功能都会单独文章介绍
+</More_info>
 
 ## 现代编辑器时代 (2000s-至今)
 千禧年后的时代由于GUI和Web的普及，基于现代图形界面的文本编辑器占据了主流地位。对于

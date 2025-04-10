@@ -5,6 +5,7 @@ import React from 'react'
 import  More_info   from "@/app/ui/More_info"
 import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
 import  Capture_image  from "@/app/ui/Capture_image"
+import  Expanded_info from "@/app/ui/Expanded_info"
 
 // For Latex
 import rehypeHighlight from 'rehype-highlight'
@@ -114,7 +115,9 @@ let components = {
   // table : Table,
 }
 
-const ext_components = { More_info, MermaidDiagram, Capture_image }
+const ext_components = { More_info, 
+                         MermaidDiagram, Capture_image,
+                         Expanded_info }
 
 export function CustomMDX(props:any) {
   return (

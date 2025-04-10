@@ -1,6 +1,7 @@
 ---
 title: 设计模式杂杂谈
 updated: 2014-05-26
+date: 2014-05-26
 ---
 
 > 北冥有鱼，其名为鲲。
@@ -10,18 +11,20 @@ updated: 2014-05-26
 > 南冥者，天池也。 -- 庄子
 
 不知道从什么时候起设计模式，慢慢变成一个装逼必备的理论开始被讨论了，也许50年了。今天我们聊一种模式
-##Strategy Pattern
-我们先不说这些有的没的模式该是什么表现形式，照例应该先吹比。首先说说Strategy pattern的strategy是什么意思
+**Strategy Pattern** 我们先不说这些有的没的模式该是什么表现形式，照例应该先吹比。首先说说**Strategy pattern**的**strategy**是什么意思
 > a plan of action or policy designed to achieve a major or overall aim.
 （以上是Google translate友情提供翻译。）
 
-说Strategy是为了一个长期的目标制定的一个动作。从这种解释可以看出来，这个模式其实是代码中的动作（函数，方法）的集合。我想大家看过三国吧，Strategy pattern就像诸葛老儿给的锦囊计，你要用的时候找我,我给你我的技巧。（这里要注意的是，1.这个给的只是方法而不是对象（我说的这个对象是，即封装了属性又封装了方法的对象）。他在代码的表现形式上更像一个属性，你通过setter和getter方法改变和获取这个可设置的Strategy。
+说Strategy是为了一个长期的目标制定的一个**动作**。从这种解释可以看出来，这个模式其实是代码中的动作（函数，方法）的集合。
+我想大家看过三国吧，Strategy pattern就像诸葛老儿给的锦囊计，你要用的时候找我,我给你我的技巧。
+这里要注意, 这个给的只是**方法而不是对象**（我说的这个对象是，即封装了属性又封装了方法的对象）。
+他在代码的表现形式上更像一个**属性**，你通过setter和getter方法改变和获取这个可设置的Strategy。
 
 1. 设计模式整体的概念在于抽象世界，所以他们常常把在**不同情况**下改变的东西变得可以改变并且**提出来**。
 2. 设计模式里面还有一个技巧，通过在类里实现一个空方法，调用组合对象的方法来提高并封装了组合对象的方法调用层级。让使用者认为自己在调用产生类的方法，而其实是产生类中组合实例的函数。
 
-##🌰我来举个老师去上课的例子吧
-```
+## 🌰我来举个老师去上课的例子吧
+```py
 import Foundation
 /// 这是锦囊类
 protocol TeachCategorical {
@@ -97,13 +100,18 @@ englishRoom.publish()
 记住的是，你在编码的时候发现什么被经常改动。如果改动的是方法，记得使用接口封装他们。如果改动的是数据结构，我们下次再说用什么。
 
 -----------
-##同胞兄弟 Factory Pattern
+## "同胞兄弟" Factory Pattern
+
 ### defalut factory pattern
+
 为什么要在一起说这两个pattern呢，因为我觉得从结构上来看他们很像，可以一起**横向对比**。
-照例我们还是先从名字入手，factory，没啥好介绍的。名词:工厂。也就是说，我们可以通过这个『工厂』来『制造』并且产出『产品』，这里的『产品』就是我们想要批量生产或者方便添加的类。
+照例我们还是先从名字入手，factory，没啥好介绍的。
+
+名词:工厂。也就是说，我们可以通过这个『工厂』来『制造』并且产出『产品』，这里的『产品』就是我们想要批量生产或者方便添加的类。
+
 有上述可以得到，我们在这个模式中需要定义产品对象。自然而然的，我们需要定义接口来指导行为。
 
-```
+```py
 // 简单工厂模式样例
 /* ------- */
 /// 这是产品类
@@ -139,8 +147,8 @@ enum operatorsEnum {
     case Add, Minie, Divice, Mutiple
 }
 ```
-由此可见，这个产品的模板其实和策略模式的策略类的表现形式如出一辙。继续看工厂类的实现
-```
+由此可见，这个产品的模板其实和**策略模式**的策略类的表现形式如出一辙。继续看工厂类的实现
+```py
 class OperatorsFactory {
     func createOperatorWithType(operat: operatorsEnum) -> Operators {
         var operators : Operators
@@ -158,10 +166,10 @@ class OperatorsFactory {
     }
 }
 ```
-作为简单工厂，只需要一个函数来产生不同的产品，通过接口来使用『里氏替换原则』接受所有的产品类型，返回产品实例。
+作为**简单工厂**，只需要一个函数来产生不同的产品，通过接口来使用『**里氏替换原则**』接受所有的产品类型，返回产品实例。
 最后看一下使用方法。
 
-```
+```py
 class User {
     var factory: OperatorsFactory
     init(operaFactory: OperatorsFactory) {
@@ -179,19 +187,26 @@ users.perfromWithType(.Add)
 users.perfromWithType(.Minie)
 ```
 首先使用者类中，存在一个组合的工厂类的实例（这样一点又和策略模式的角色类的实现相同），然后有一个方法（createOperatorWithType :opType）通过外部的产品类型返回实例，直接调用这个实例的方法（以转换为用户类的方法）
+
 ### Factory Method Pattern
 > **变量就是类，类和变量的相互转化**
 
 老生常谈了，我们还是从名字开始入手，『工厂方法』这名字可能说明不了什么问题（比较像中国人起的名字）
 
-> 工厂方法模式(Factory Method Pattern)又称为工厂模式，也叫**虚拟构造器**(Virtual Constructor)模式或者**多态工厂**(Polymorphic Factory)模式，
+<More_info>
+ * **工厂方法模式** (Factory Method Pattern)又称为工厂模式，
 
-Virtual Constructor Pattern和Polymorphic Factory Pattern这两个名字就很能说明问题了。
+ * **虚拟构造器**   (Virtual Constructor)模式
+
+ * **多态工厂**     (Polymorphic Factory)模式
+</More_info>
+
+**Virtual Constructor Pattern**和**Polymorphic Factory Pattern**这两个名字就很能说明问题了。
 在计算机科学里面常常有人喜欢说Virtual这个词，『虚拟化』听上去就很牛逼，基本上看到这个词的时候就知道这个人是把什么东西抽象成一个抽象描述了，而在代码实现中接口就是这种抽象描述。再看看Polymorphic Factory就能知道这个『工厂』可能是很多的。（一般这种很多的东西，就是通过不同的类来分割职能，所以需要使用接口把他们统一起来）
 
 来我们使用Virtual constructor 重构上面的简单工厂看看。
 
-```
+```py
 class OperationDecorator: Operators {
     var operat: Operators! = nil
     init(opera: Operators) {
@@ -217,7 +232,7 @@ class IntDecorator: OperationDecorator {
 ```
 这里写了两个产品，
 
-```
+```py
 protocol OperationUser {
     func performfWithType(operationType: operatorsEnum)
     func createOperaWithType(operationType: operatorsEnum) -> Operators!
@@ -251,9 +266,9 @@ var user: OperationUser = DoubleUser()
 
 user.performfWithType(.Add)
 ```
-###Abstract Factory Pattern
+### Abstract Factory Pattern
 抽象工厂模式的主要作用就是把上述的工厂类的方法抽象成接口。我们直接看代码。
-```
+```py
 protocol WeaponType {
     func fire() -> String
 }
@@ -381,9 +396,11 @@ user.fireWithType(.HK)
 
 ```
 上述代码和工厂方法模式对于user的封装基本相同，都是组合一个工厂，只是这次的是一个抽象的接口，上次是类。
+
 ### 工厂方法和抽象工厂模式的异同
 其实抽象工厂是通过接口来产生工厂的集合，而工厂方法会选取工厂来『生产』
-```
+
+```typescript
 /**
  *  对使用者抽象
  */

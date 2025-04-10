@@ -1,9 +1,10 @@
 ---
 title: qemu上网指南
 updated: 2024-12-09
+date: 2024-12-09
 categories : [program, network]
 ---
-# 如何使用bridge连接qemu虚拟机和宿主机
+## 如何使用bridge连接qemu虚拟机和宿主机
 
 ## Requirements
 ``` 
@@ -88,7 +89,7 @@ sudo tunctl -t tap0 -u <user>
 sudo ip link set up dev tap0
 ```
 
-> 这里的<user>填写允许访问这个tap0接口的用户
+> 这里的\<user\>填写允许访问这个tap0接口的用户
 
 ---
 这时候的网络接口情况
@@ -236,6 +237,6 @@ WantedBy=multi-user.target
 ---
 
 ### 后
-虽然设置好虚拟机的网卡但一直没有几乎添加协议栈内容;*(，希望有几乎实现协议栈。
+虽然设置好虚拟机的网卡但一直没有几乎添加协议栈内容，希望有机会实现协议栈。
 
 Thu Feb 13 05:37:47 PM CST 2025

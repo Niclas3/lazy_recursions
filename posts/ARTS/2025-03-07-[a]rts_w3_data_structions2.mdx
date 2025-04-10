@@ -300,8 +300,13 @@ char *minWindow_opt(char *s, char *t)
 ```
 下面修改过的方案，可以发现这个方案还是没法通过leetcode最后几个test case, 这时候我们可以通过算函数的时间复杂度来判断如何修改策略。
 
-`has_target_char_map(from,to,s,t,t_len,target_map)` $ \mathcal{O}( (to-from) \times tlen + mapsize)$
-`minWindow_opt(s,t)` $\mathcal{O}(slen) \times \mathcal{O}( (to-from) \times tlen + mapsize) $
+`has_target_char_map(from,to,s,t,t_len,target_map)` 
+
+$ \mathcal{O}( (to-from) \times tlen + mapsize)$
+
+`minWindow_opt(s,t)` 
+
+$\mathcal{O}(slen) \times \mathcal{O}( (to-from) \times tlen + mapsize) $
 
 整体应该是  $\mathcal{O}(N \times K \times M)$
 ```c
@@ -466,7 +471,7 @@ char *minWindow_opt_2(char *s, char *t)
 
 我们看一下另一个双指针应用的问题
 
-## 二分搜索 {#binary_search}
+## 二分搜索 
 
 二分搜索是一个很容易出错也很容易理解的算法。简单来说就是通过不断寻找剩下的数据的中间值
 来搜索目标数字。
@@ -506,7 +511,7 @@ int my_first_seen_search(int *nums, int numsSize, int target)
 4. 【调整右】right = mid + 1， 并跳转到2.
 5. 【调整左】left = mid - 1， 并跳转到2.
 
-<pre class="mermaid" style="text-align: left;">
+<MermaidDiagram>
 graph TD
     A["1.【初始化】"] ==> B["2.【找中项】"]
     B --> C["3.【比较值】"]
@@ -521,14 +526,14 @@ graph TD
     class E,F greenNode
     classDef blueNode fill:#aaaaff,stroke:#0000ff,stroke-width:2px;
     classDef greenNode fill:#aaccff,stroke:#00ffff,stroke-width:2px;
-</pre>
+</MermaidDiagram>
 
 结合`my_first_seen_search()` 的代码和二分搜索逻辑来反思错误的思考逻辑。
 
 拿到二分搜索的问题，首先就知道需要通过不断的取中值来获得目标，这样自然需要2个指针来维护一个搜索空间。然后你需要一个中间项的获取逻辑，和判断是否命中target，
 单纯只是给左右边界赋值mid会导致在某些情况没有办法缩小空间。
 
-<div markdown="1" style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
+<More_info>
 **例子**
 
 * int nums[] = {-1, 0, 3, 5, 9, 12};
@@ -538,22 +543,22 @@ graph TD
 2. left=0 right=2 mid=1 nums\[1\]=0
 3. left=1 right=2 mid=1 nums\[1\]=0
 4. left=1 right=2 mid=1 nums\[1\]=0
+</More_info>
 
-</div>
 
 上面的例子就显示了left right指针被被“固定”在一个地方了。首先,我们使用$\lfloor
 (left + right) \div 2 \rfloor$ 来计算mid值，二分搜索就是把当前数聚集分成偏大和偏小两种集合，
 无论选择哪个集合当前这个mid点都被判断过了所以不应该加入下一次的迭代。
 
 我们期待的表现应该是这样。
-<div markdown="1" style="background-color:#d0e7f9; color:#4d4d4d; padding:10px; border-radius:5px;">
+<More_info>
 * int nums[] = {-1, 0, 3, 5, 9, 12};
 * int target = 2;
 
 1. left=0 right=1 mid=2 nums\[2\]=3
 2. left=1 right=1 mid=0 nums\[0\]=-1
 3. left=2 right=1 mid=1 nums\[1\]=0
-</div>
+</More_info>
 
 
 下面给出二分搜索的正确逻辑
@@ -583,7 +588,7 @@ int search(int* nums, int numsSize, int target) {
 把这个算法执行当作一个二叉决策树。
 
 这是一个N=16的二叉树
-<pre class="mermaid" style="text-align: left;">
+<MermaidDiagram>
 graph TD;
     8 --> 4;
     8 --> 12;
@@ -618,7 +623,7 @@ graph TD;
     13 --> n["14"];
     15 --> o["15"];
     15 --> q["16"];
-</pre>
+</MermaidDiagram>
 
 如图你可以很直观发现，这个算法每一次选择都会减少当前集合K的一半，也就是N次选择，就会有
 $ K / 2^N $数据被排除。当成功选择到target number时候$K / 2^N = 1$ 所以 $N=log_2 K$ 所以这时候

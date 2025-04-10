@@ -1,23 +1,25 @@
 ---
 title: 总结OSX上面配置VIM + slimv的common Lisp环境
 updated: 2014-02-23
+date: 2014-02-23
 ---
 
-前言
-========================================
+## 前言
+
 作者本人是一个vim使用者，一直想学函数式的语言于是就挑了Common Lisp，可是问题是CL对vim支持不想Emacs这么好，不过爱折腾的我肯定不会罢休的。
 
-如果你急着配置你的环境请移步**总结**  
-准备工作
-------
+**如果你急着配置你的环境请移步总结**  
+
+## 准备工作
+
+
 1.Python环境（作者使用的是Python 2.7.x的版本）
 
 2.重新编译的Vim需要支持Python
 
 3.下载slimv的插件
 
-折腾过程
-------
+## 折腾过程
 
 作者在这些准备齐全过后按照[官网][1]上面的介绍解压到.vim文件夹之后使用“,c”这个快捷键呼出STREAM结果没有任何反应。然后我就在作者制作的[Slimv Tutorial][2]第一篇里面看到原来需要一个common Lisp的编译器于是连忙用Home brew下了sbcl 
 
@@ -27,7 +29,7 @@ updated: 2014-02-23
 
 >On Linux this can be something like:
 
->let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
+`let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'`
 
 这里我只介绍怎么在Mac的环境里面配置所以就不管别的平台下面的配置了所以我在我的.vimrc文件里面添加了作者给的代码
 
@@ -44,8 +46,8 @@ updated: 2014-02-23
 再运行终于可以了。
 ~\(≧▽≦)/~
 
-总结
----
+## 总结
+
 这次对slimv的折腾，几番周折，主要没有中文的资料很麻烦后来在[douban笔记][3]里面找到了资料真的需要感谢下这个作者。
 我在梳理一下
 
@@ -59,8 +61,6 @@ updated: 2014-02-23
 最后，希望我的文章能给爱折腾的你一点用，希望你们能坚持common Lisp的学习，与你共勉
 
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/cn/80x15.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
-**本文章遵循CC协议，请自觉遵守    -作者Niclas**
 
 2013-12-30 20:00
 
