@@ -8,6 +8,8 @@ import {noto_sans_sc} from '@/components/fonts';
 import '@mantine/core/styles.css'
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
 
+import { SpeedInsights } from '@vercel/speed-insights/next'
+
 const theme = createTheme({
         primaryColor: 'red',
         autoContrast: true 
@@ -57,6 +59,7 @@ export default function RootLayout({
 
         </ThemeProvider>
        </MantineProvider>
+       <SpeedInsights />
       </body>
     </html>
   )

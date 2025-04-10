@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "overrides":{
-          "next-contentlayer":{
-                  "next": "$next"
-          }
+  "overrides": {
+    "next-contentlayer": {
+      "next": "$next"
+    }
   },
   "dependencies": {
     "@mantine/charts": "^7.17.4",
@@ -24,6 +24,7 @@
     "@next/mdx": "^14.2.13",
     "@tailwindcss/typography": "^0.5.15",
     "@types/mdx": "^2.0.13",
+    "@vercel/speed-insights": "^1.2.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
     "contentlayer": "^0.3.4",
