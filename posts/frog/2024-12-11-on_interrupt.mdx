@@ -99,7 +99,7 @@ NMI信号会**直接连接CPU**，而不通过PIC。
     **第二个操作数**是内存地址，包含两个边界值(低边界，高边界)
     如果寄存器的值小于低边界或者大于高边界，触发**#BR(bounds check exception)**
     
-    ```
+    ```c
     bound reg, mem
     ```
 中断向量一共256个，范围是0-255。
@@ -116,7 +116,7 @@ NMI信号会**直接连接CPU**，而不通过PIC。
 ![](/assets/forg_on_interrupt_processtable.png)
 
 
-```
+```c
 <!-- 
    类型                         栈类型
 1. 普通进程(用户进程)           用户栈/内核栈

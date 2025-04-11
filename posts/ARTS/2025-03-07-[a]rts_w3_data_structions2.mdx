@@ -98,7 +98,7 @@ $ \mathcal{O}(w \times |t|) $
 
 `minWindow(s,t)`
 $\mathcal{O}(|s| \times |t|)\times \mathcal{O}(|s|^2)$
-```
+```c
 01. A D O B E C 
 02. A D O B E C O 
 03. A D O B E C O D 
@@ -151,7 +151,7 @@ char *minWindow(char *s, char *t)
 ```
 修改之后得出的数据明显少了很多。这样相当于只调控**右边**的指针让右边指针及时退出，明显
 还可以通过调整**左边**的指针来让数据变更少。
-```
+```c
 1. A D O B E C
 2.   D O B E C O D E B A
 3.     O B E C O D E B A

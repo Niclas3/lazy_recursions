@@ -7,13 +7,13 @@ categories : [program, network]
 ## 如何使用bridge连接qemu虚拟机和宿主机
 
 ## Requirements
-``` 
+``` bash
 #本机环境
 uname -a
 Linux k 6.2.0-37-generic #38.22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 2 18:01:13 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
-```
+```bash
  # 安装虚拟网桥工具 brctl
 sudo apt install bridge-utils -y
  # 安装(user-mode linux)工具 tunctl
@@ -34,7 +34,7 @@ sudo ip link set <enp0> up
 sudo ip link set tap0 up
 ```
 
-```
+```bash
 # 设置qemu的网络前端设备和后端设备
 qemu-system-i386 \ 
 -netdev tap,id=net0,ifname=tap0,script=no,downscript=no \

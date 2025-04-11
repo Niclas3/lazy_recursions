@@ -81,7 +81,7 @@ $\mathcal{O}(2^n) \times \mathcal{O}(1) = \mathcal{O}(2^n)$
 我也标记了相同的颜色。
 
 如下是2的指数级别的算法
-```
+```cc
 int fib(int n) {
   if (n == 0 || n == 1) {
     return n;
@@ -108,7 +108,7 @@ xychart-beta
 
 备忘录的引入逻辑很简单类似考试的小抄一样，它可以让你不必再计算一遍同样的答案只需要查找对应的题号就会得到对应的答案。
 使用这种逻辑加速运算在历史上也比比皆是，1614年John Napier发明[对数表](https://blog.csdn.net/ComputerInBook/article/details/129696172)；intel在CPU中使用[TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer)加速虚拟地址转换等等。
-```c
+```cc
 int fib_memo(int n, long *memo)
 {
         if (n == 2 || n == 1) {
@@ -151,7 +151,7 @@ $\mathcal{O}(n) \times \mathcal{O}(1) = \mathcal{O}(n)$
 接下来我们来处理**自底向上**的思路，bottom-up的思路就是从基本情况向复杂情况推论的思路，使用
 FP举例就是当F1=1,F2=1,那么按照公式F3=2。一步一步的填出一张表这个表一般叫他**DP
 table**。
-```
+```c
 
 long *memo = malloc(MAX_NUM * sizeof(long));
 
@@ -187,7 +187,7 @@ FP的状态转移方程我在上面给过了。
 所以bottom-up的思路的时间复杂度也是 $\mathcal{O}(n)$。
 
 进一步你可以通过优化dptable的大小来优化这个算法
-```
+```c
 long *small_memo = malloc(2 * sizeof(long));
 long fib_bottomup_opt(int n, long *memo)
 {

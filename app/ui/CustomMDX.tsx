@@ -1,17 +1,29 @@
 import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+
 import React from 'react'
 
-import  More_info   from "@/app/ui/More_info"
-import  MermaidDiagram  from "@/app/ui/MermaidDiagram"
-import  Capture_image  from "@/app/ui/Capture_image"
-import  Expanded_info from "@/app/ui/Expanded_info"
+import { CodeHighlight } from '@mantine/code-highlight'
+import '@mantine/code-highlight/styles.css'
+
+import More_info   from "@/app/ui/More_info"
+import MermaidDiagram  from "@/app/ui/MermaidDiagram"
+import Capture_image  from "@/app/ui/Capture_image"
+import Expanded_info from "@/app/ui/Expanded_info"
 
 // For Latex
 import rehypeHighlight from 'rehype-highlight'
 import rehypeMathjax from 'rehype-mathjax'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+
+// For YAML or TOML frontmatter
+import remarkFrontmatter from 'remark-frontmatter' 
+
+import remarkToc from 'remark-toc'
+
+// For highlight
+import 'highlight.js/styles/androidstudio.min.css'
 
 // For table elements suppport 
 // more info to see https://mdxjs.com/guides/gfm/
@@ -21,9 +33,11 @@ import 'katex/dist/katex.min.css'
 
 import { Code, Title, Image } from '@mantine/core'
 import type { TitleOrder } from '@mantine/core'
+
+
 const options = {
         mdxOptions: {
-                remarkPlugins: [remarkMath, remarkGfm],
+                remarkPlugins: [remarkMath, remarkGfm, remarkFrontmatter, remarkToc],
                 rehypePlugins: [rehypeKatex, rehypeHighlight, rehypeMathjax]
         }
 
@@ -69,14 +83,18 @@ function RoundedImage(props:any) {
         );
 }
 
-function InlineCode ({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any) {
-        return <Code > {children} </Code>
-};
 
-
-function MutilineCode({ children, className = 'bg-gray-200 rounded-sm px-1 font-mono text-sm' }:any){
-        return <Code block className = {className}> {children} </Code>
+/* 
+ * This MDX Component is for Custom MDX Component HighlightCode powered by
+ *  Mantine UI. If you want hook ``` ``` or `` in .mdx files, please use 
+ *  MDX plugin like "rehypeHighlight"
+ */
+function HighlightCode({code, lang}:{code:string, lang:string}) {
+        return <CodeHighlight code={code} language={lang}
+                              copyLabel="Copy button code"
+                              copiedLabel="Copied!"/>
 }
+
 
 function slugify(str:any) {
   return str
@@ -110,14 +128,15 @@ let components = {
   h6: createHeading(6),
   img: RoundedImage,
   a: CustomLink,
-  code: InlineCode,
-  pre: MutilineCode,
+  // code: InlineCode,
+  // pre: MutilineCode,
   // table : Table,
 }
 
 const ext_components = { More_info, 
                          MermaidDiagram, Capture_image,
-                         Expanded_info }
+                         Expanded_info,
+                         HighlightCode }
 
 export function CustomMDX(props:any) {
   return (
