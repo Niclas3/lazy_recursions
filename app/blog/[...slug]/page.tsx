@@ -10,14 +10,18 @@ export async function generateStaticParams() {
   const posts = allPosts
  
   return posts.map((post) => {
+
+        const slugs = post.url.split('/')
+                              .filter((str)=>(str !==''))
+                              .filter((str)=>(str !== "blog"))
         return {
-                slug: post.url.split('/'),
+                slug: slugs,
         }
   })
 }
 
 export default async function Post_page({ params }:
-                                   { 
+                                   {
                                         params: Promise<{slug: string[]}>
                                    })
 {

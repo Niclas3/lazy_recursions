@@ -188,8 +188,9 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<Pos
               duration: 0.2,
             }}
           >
-            { blog_posts.map((post:Post, index:number) => (
-              <Link
+            { blog_posts.map((post:Post, index:number) => {
+
+              return <Link
                 key={index}
                 className="-mx-3 rounded-xl px-3 py-3"
                 href={post.url}
@@ -204,7 +205,8 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<Pos
                   </p>
                 </div>
               </Link>
-            ))}
+            }
+            )}
           </AnimatedBackground>
         </div>
       </motion.section>
