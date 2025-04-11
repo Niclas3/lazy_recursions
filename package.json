@@ -32,6 +32,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
     "lucide-react": "^0.468.0",
     "mermaid": "^11.6.0",
     "motion": "^11.15.0",
@@ -46,9 +47,11 @@
     "rehype-highlight": "^7.0.2",
     "rehype-katex": "^7.0.1",
     "rehype-mathjax": "^7.1.0",
+    "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-mdx-math-enhanced": "^0.0.1-beta.3",
+    "remark-toc": "^9.0.0",
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
