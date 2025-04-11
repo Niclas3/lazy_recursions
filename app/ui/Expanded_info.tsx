@@ -13,9 +13,7 @@ export default function Expanded_info({children}:{children: React.ReactNode}) {
                                 </Button>
                         </Group>
                         <Collapse in={opened}>
-                                <Text>
-                                        {children}
-                                </Text>
+                                {children}
                         </Collapse>
 
                 </Box>
