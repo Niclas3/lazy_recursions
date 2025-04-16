@@ -55,19 +55,21 @@ mermaid.initialize(
   fontFamily: "Fira Code"
 });
 
-// export default function MermaidDiagram({children}: {children:React.ReactNode}){
-//         return (<pre className="mermaid"> {children} </pre>);
-// }
 
 export default function MermaidDiagram({children}:{children: React.ReactNode}){
         const mermaid_ref = useRef(null);
         useEffect(()=>{
+                (async () =>{
+                        const gcode = React.Children.map(children,(child:any)=>{
+                                return child.props.children
+                        })?.flat(1)[0];
+                        const { svg } = await mermaid.render('grapDiv', gcode)
+                        mermaid_ref.current.innerHTML = svg;
+                })()
+
                 mermaid.contentLoaded();
         },[children]);
-        const gcode = React.Children.map(children,(child:any)=>{
-                return child.props.children
-        })?.flat(1)[0];
 
-        return (<pre ref={mermaid_ref} className="mermaid"> {gcode} </pre>);
+        return (<div ref={mermaid_ref }> </div>)
 }
 
