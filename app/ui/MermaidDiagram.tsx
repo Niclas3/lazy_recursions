@@ -57,14 +57,17 @@ mermaid.initialize(
 
 
 export default function MermaidDiagram({children}:{children: React.ReactNode}){
-        const mermaid_ref = useRef(null);
+        const mermaid_ref = useRef<HTMLDivElement>(null);
         useEffect(()=>{
                 (async () =>{
                         const gcode = React.Children.map(children,(child:any)=>{
                                 return child.props.children
                         })?.flat(1)[0];
                         const { svg } = await mermaid.render('grapDiv', gcode)
-                        mermaid_ref.current.innerHTML = svg;
+                        const current = mermaid_ref.current
+                        if(current){
+                                current.innerHTML = svg;
+                        }
                 })()
 
                 mermaid.contentLoaded();
