@@ -110,8 +110,8 @@ function slugify(str:any) {
 function createHeading(level:number) {
   const Heading = ({ children, className }:any) => {
         const validLevel = Math.max(1, Math.min(6, level));
-        let slug = slugify(children)
-        const headingClassName = `font-semibold tracking-tighter ${className}`
+        // let slug = slugify(children)
+        // const headingClassName = `font-semibold tracking-tighter ${className}`
 
         return <Title order={ validLevel as TitleOrder }> { children } </Title>
   };
