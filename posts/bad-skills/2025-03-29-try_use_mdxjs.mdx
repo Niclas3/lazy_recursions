@@ -1,11 +1,12 @@
 ---
 layout: post
-title: "使用MDXJS"
+title: "2025年我怎么使用MDX构建这个博客"
 date: 2025-03-29
 categories: []
 tags: [tools]
 ---
-## 肇起
+<Capture_image src="/assets/20250417_try_use_mdx.jpg" alt="alt-test" capture="合体！！" />
+## 合体！！
 
 使用markdown也有一个多月了，文章排版上很方便很实用，但是想要有一些复用的小组件就需要
 反复的复制粘贴了，既然有重复使用组件的需求和之后想要有一些javascript互动组件。我决定引入[mdxjs](https://mdxjs.com/).
@@ -25,16 +26,199 @@ flood conditions in many of the nearby rivers.
 ```
 在没有mdx的时候对md文件的扩展也是类似给md文件里添加html标签来增强其表达力
 
-## 融合
-我这个博客是通过github page这个功能发布的，使用的是github page 推荐的
-jekell编译和部署这个静态页面的。这次技术升级希望在不改变原有发布流程的基础上，添加对react组件支持的能力。
+## 融合失败
+我这个博客是通过github page这个功能发布的，使用的是github page 推荐的方案，
+jekell编译和部署这个静态页面的。本来这次技术升级希望在不改变原有发布流程的基础上，添加对react组件支持的能力。
 
 首先，[jekyll](https://jekyllrb.com/)是不原生支持解析MDX文件的。jekyll作为一个静态网站生成器，它的基本功能是**Markdown的渲染**和**静态资源管理**,jekyll也提供一个Liquid语法允许你通过
 类似配置的逻辑来处理一些重复页面生成的内容（比如每个页面的需要引入的style、提供图表功能的js库）。
 
 再看，MDXjs，它主要是解析mdx文件，将Markdown转化为React组件。mdxjs也需要使用React运行时，MDX不能直接变成HTML，它需要React渲染。
+如果我想要在jekyll的生成逻辑里添加mdx的支持，那我就需要深度客制化jekyll，在jekyll生成html之前插入对mdx的解析融合入jekyll生成的html（这太麻烦了！）
+
+基于如此种种的考量我选择了Vercel+Next.js代替github+jekell
+
+## 技术选型
+
+目前支持Mdx的静态博客产生器或者框架,
+Astro、VitePress、Docusaurus、SelteKit、Remix、Elder.js、Next.js
+
+|              | Astro | VitePress | Docusaurus | SvelteKit | Remix | Elder.js | Next.js |
+|--------------|-------|-----------|------------|-----------|-------|----------|---------|
+| 支持 React   | ✅     | 🙈         | ✅          | 🙈         | ✅     | 🙈        | ✅       |
+| 原生支持 MDX | ✅     | 🙈         | ✅          | ⚠️（mdsvex）| ⚠️（需配置）| ⚠️（需插件）| ✅       |
+| 适合 blog    | ✅     | ⚠️         | ⚠️（偏文档） | ✅         | ✅     | ✅        | ✅       |
+| 有比较好社区 | ✅     | ✅         | ✅          | ✅         | ✅     | 🙈        | ✅       |
+
+你很容易就能看到Next.js和Astro两个都是比较适合的SSG，由于Vercel原生支持Next.js所以我最后选择了它。
+当然Astro也是一个很聪明很值的讨论的设计方案，如果有机会之后我会写一篇来聊一聊Astro, 还有SVelte，这也是
+一个新的UI范式，也是很值得理解。
+
+But now let‘s dive in！
+
+## 中途
+我使用Vercel 和 nextjs的技术栈做blog有一个曲折的过程，在谈论这个曲折过程之前我想先介绍一下目前这个博客的基本架构。
+
+1. 数据，           使用[contentlayer2](https://github.com/timlrx/contentlayer2/tree/2a0405cc65d9c7d7a684834258ed7a3e73ebbae4)提供SSG的数据基础
+2. UI  ，           使用[mantineUI](https://mantine.dev/)和[tailwindCSS](https://tailwindcss.com/)提供UI基础
+3. 动画，           使用[motion](https://motion.dev/)提供一些动画
+4. 部署，           使用[Vercel](https://vercel.com/)部署
+5. 版本管理，       使用[github](https://github.com/Niclas3/lazy_recursions)进行版本管理
+6. MDX中的图表，    使用mermaid
+7. MDX中的代码高亮，使用rehypeHighlight
+8. MDX中的LaTeX，   使用remarkMath, rehypeKatex, rehypeMathjax，这三个mdx插件。
 
 
+介绍完基本情况，我来聊聊我的心路历程记录一下。屏着写博客关键的是写博客而不是折腾blog网站的搭建技术这样技术为书写服务的观点。
+我在技术选型之后立马找了一个顺眼的UI的博客template-[nim](https://github.com/ibelick/nim)，我立马发现这个template有一个缺点，它的每一个文章都是一个page，这样相当于我每一次写文章都要
+新建一个route，灵活性太差了。我需要的是一个可以读取📁posts/文件夹的逻辑，也就是需要使用node读取mdx文件，在build期间生成静态页面。于是我就接入了
+contentlay2来处理原生的mdx文件把他们的metadate打包成type提供给页面使用。
+
+后来我引用mantineUI是为了提供更多的组件之后使用。由于我使用了上述的数据处理模式，所以尽量把mdx-html这个过程在编译期间完成，这里就碰到Mermaid图表的表示问题。
+下面我尽量清楚的表述我在mermaid图表兼容中遇到的问题。
+
+## 迷惑人心的美人鱼-mermaid
+一开始，我在github page时期的时候是直接使用mermaid的，这时候只需要在markdown文件里写使用如下代码
+```html
+<pre class="mermaid" style="text-align: center;">
+graph TD
+    A["f(10)"] --> B["f(9)"]
+    A --> C["f(8)"]
+    B --> D["f(8)"]
+    B --> E["f(7)"]
+    C --> F["f(7)"]
+    C --> G["f(6)"]
+
+    class C,D blueNode;
+    class E,F greenNode
+    classDef blueNode fill:#aaaaff,stroke:#0000ff,stroke-width:2px;
+    classDef greenNode fill:#aaccff,stroke:#00ffff,stroke-width:2px;
+</pre>
+```
+我只需要给一个div或者pre标签一个叫做mermaid的class，mermaid这个组件就会自动选择这个标签，然后读取其中的innerHTML中的DSL
+经过DSL分析之后生成一个svg标签插入到目标标签的innerHTML来输出图像。
+
+如果使用React那就需要把UI嵌入React的循环，并在渲染该组件的时候再生成svg.
+类似如下代码
+```typescript
+import React, { useEffect, useRef } from 'react'
+import mermaid from 'mermaid'
+
+mermaid.initialize( { startOnLoad: true, });
+
+export default function MermaidDiagram({children}:{children: React.ReactNode}){
+        const mermaid_ref = useRef<HTMLDivElement>(null);
+        useEffect(()=>{
+                (async () =>{
+                        const gcode = `
+                            graph TD
+                                A["f(10)"] --> B["f(9)"]
+                                A --> C["f(8)"]
+                                B --> D["f(8)"]
+                                B --> E["f(7)"]
+                                C --> F["f(7)"]
+                                C --> G["f(6)"]
+                        `
+                        const { svg } = await mermaid.render('grapDiv', gcode)
+                        const current = mermaid_ref.current
+                        if(current){
+                                current.innerHTML = svg;
+                        }
+                })()
+                mermaid.contentLoaded();
+        },[children]);
+
+        return (<div ref={mermaid_ref }> </div>)
+}
+```
+或者类似如此写
+```typescript
+import React from "react";
+import mermaid from "mermaid";
+
+mermaid.initialize({ startOnLoad: true });
+
+export default class Mermaid extends React.Component {
+  componentDidMount() {
+    mermaid.contentLoaded();
+  }
+  render() {
+    return <div className="mermaid">{this.props.chart}</div>;
+  }
+}
+
+```
+由于我使用mdx，当时我还不明白mdx的流程，如果写成如上代码，会导致react的水合问题，原因很简单改变上述div的innerHTML和服务器
+端给出的html不一样。
+
+从这里我就开始绕远了，自然如果我不明白mdx的流程我肯定没法解决这个react水合问题（其实当时应该在useEffect里更新innerHTML就好了）。
+我简单来说MDX是一个内容转译流水线
+```
+.md | .mdx 文件
+  ↓
+📚 Remark（Markdown 解析） -> 把 Markdown 变成 MDAST（Markdown AST）
+  ↓
+🌐 Rehype（HTML 解析） -> 把 MDAST 转为 HAST（HTML AST）
+  ↓
+⚛️ 转换成 JSX 结构（组件级 HTML）
+  ↓
+🧠 Babel 编译 JSX -> React.createElement 调用树
+  ↓
+🧩 最终交由 ReactDOM 或 RSC（Server） 渲染
+```
+1. remark
+   这一层就是把markdown转化成MDAST这层就可以开始使用插件处理，类似词法分析/语法分析
+2. Rehype
+   这样一层是把MDAST转化成HTML AST，这样你就可以处理一些Dom层结构，比如我们的mermaid支持就可以在这里做
+3. JSX层
+   这里把HTML AST 转化来的一些自定义Components保留下来变成JSX元素
+
+4. 编译
+5. React渲染了
 
 
+我的package.json里使用了好几个包
+
+* "@next/mdx": "^14.2.13",    这个包是mdx-js/loader的next封装
+* "@mdx-js/loader": "^3.0.1", 这个包是用来支持 `import xxx.mdx`
+* "@mdx-js/react": "^3.0.1",  大概就是第五层
+* "next-mdx-remote": "^5.0.0" 这个是上述的系统动态渲染
+
+于是我就像上文说的一样，试图在rehype层添加plugin来解决mermaid的水合问题。似乎一切都往顺利的方向发展，
+天真的我还没想到还有一个美人鱼的歌等着我。
+
+## 小美人鱼上岸
+mermaid是一个原产于浏览器端的插件，生成svg需要一些浏览器端的支持，于是我在build阶段也就是node环境的mdx解释层
+是没有浏览器环境的，当然，这不是问题，node环境是有一种叫做无头浏览器的东西的。
+
+## 美人鱼没有脚，浏览器没有头
+无头浏览器是一种没有GUI可以在后台模拟浏览器行为的工具。常见的有[puppeteer](https://pptr.dev/)、[playwright](https://playwright.dev/)、
+[selenium](https://www.selenium.dev/)、[chrome DevTools Protocol（CDP）](https://chromedevtools.github.io/devtools-protocol/)
+
+| 工具名称       | 支持浏览器              | 简要描述                                       | 典型应用场景                                 | 📄 PDF 输出 | 🌐 多语言支持 |
+|----------------|--------------------------|------------------------------------------------|----------------------------------------------|-------------|----------------|
+| Puppeteer      | Chromium（Chrome）       | Google 推出的无头 Chrome 控制工具，API 简洁   | 页面抓取、截图、PDF 生成、表单自动化         | ✅           | ❌（仅 JS/TS）  |
+| Playwright     | Chromium、Firefox、WebKit| 微软出品，支持多浏览器和多语言，并发强         | 爬虫、自动测试、验证码破解、用户行为模拟     | ✅           | ✅（JS, Python, Java, C#） |
+| Selenium       | 所有主流浏览器（需驱动） | 历史悠久，跨语言自动化测试平台，生态庞大       | UI 测试、跨平台测试、旧系统自动化            | ⚠️ 需集成第三方 | ✅（Java, Python, JS, C# 等） |
+| Chrome DevTools Protocol (CDP) | Chromium      | 低层协议，用于直接控制 Chrome，适合深度定制   | 浏览器调试工具开发、自定义爬虫控制器         | ⚠️ 需手动实现 | ❌（仅 JS 可直接使用） |
+
+使用这些无头浏览器就可以在node环境里提供mermaid需要的浏览器上下文。万事俱备只差东风，只要引入环境并
+使用[mermaid-cli](https://github.com/mermaid-js/mermaid-cli)库来产生svg就好了。
+
+⛔故事到这里就结束了，我没有成功在本地成功复现如此曲折的渲染逻辑。
+
+## 美人鱼回到海里
+由于我使用的是rsc的MDX渲染.
+```typescript
+import { MDXRemote } from 'next-mdx-remote/rsc'
+```
+所以当时的我想尽量在build的时候就生成所有静态数据，现在想也许让自定义的Mermaid组件变成
+一个use client 组件这样就可以解决水合了。
+
+
+## 后
+大概用了20天左右，把博客从github page迁移到Vercel了，之后我可能会增加一个如何使用
+Vercel自带功能的文章.
+
+Thu Apr 17 05:34:43 PM CST 2025
 
