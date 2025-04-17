@@ -9,6 +9,7 @@ import '@mantine/core/styles.css'
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
 
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/next'
 
 const theme = createTheme({
         primaryColor: 'red',
@@ -53,6 +54,7 @@ export default function RootLayout({
             <div className="relative mx-auto w-full sm:max-w-screen-sm flex-1 px-4 pt-20">
               <Header />
                 {children}
+                <Analytics />
               <Footer />
             </div>
           </div>
