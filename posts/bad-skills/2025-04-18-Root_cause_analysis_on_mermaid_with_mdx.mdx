@@ -5,7 +5,7 @@ date: 2025-04-18
 categories: [RCA]
 tags: [RCA]
 ---
-<Capture_image src="/assets/20250417_try_use_mdx.jpg" alt="alt-test" capture="合体！！" />
+<Capture_image src="/assets/20250418_RCA_on_mermaid.png" alt="alt-test" capture="Root cause Analysis" />
 
 ## Mermaid 图在 MDX 中水合失败的根因分析与工程复盘
 
@@ -106,8 +106,7 @@ tags: [RCA]
 ---
 
 
-## 根因分析: Mermaid 在MDX中水合失败的问题 
-
+<Expanded_info name="根因分析: Mermaid 在MDX中水合失败的问题过程">
 1. 问题描述
     * 我这次遇到的核心问题，如何迁移之前的markdown文件到新的博客系统里？
     * 症状 不熟新的框架和发布系统，没有本质了解MDX和md文件的区别。
@@ -134,6 +133,7 @@ tags: [RCA]
     * 我觉得我可以停下来再描述问题这件事是我之前不会做的，它也是这次问题可以解决的关键。
     * 应该就是直接判断client组件没办法渲染mermaid，是我想简单了。而觉得server组件才能处理是我想复杂了。
 
+</Expanded_info>
 
 
 ## 后
@@ -143,11 +143,7 @@ tags: [RCA]
 - SSR 不一定万能，很多时候客户端执行才是合适场景
 - 技术选型不能一味追求“看起来最先进”，要服务于问题本身
 
-而我也更明确了一件事：
-
-> 真正的工程师，不只是能把 bug 修掉，而是能看见问题背后的结构，把经验变成下次的武器。
 
 _2025 年 4 月 · 博客系统迁移日志整理_
-
 
 Fri Apr 18 11:27:24 AM CST 2025
