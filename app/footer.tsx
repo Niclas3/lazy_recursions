@@ -77,6 +77,7 @@ export function Footer() {
             <span>© 2025 niclas.</span>
             <span>Built with Motion-Primitives.</span>
             <span className={noto_sans_sc.className}>曰 朝三而暮四 众狙皆怒 然则朝四而暮三 众狙皆悦</span>
+            <span className={noto_sans_sc.className}>不是因为浪漫而不务实，而是因为知道浪漫为何存在，才知道务实为何值得。🌙 </span>
           </TextLoop>
         </a>
         <div className="text-xs text-zinc-400">
