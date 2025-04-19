@@ -1,0 +1,115 @@
+---
+layout: post
+title: "🐸 Frog OS 调试日志：启动流程与 GDB 断点问题追踪-01"
+date: 2025-04-19
+categories: []
+tags: []
+---
+# 🐸 Frog OS 调试日志：启动流程与 GDB 断点问题追踪
+
+**时间范围：** 2025年4月17日 ～ 4月19日  
+**关键词：** QEMU, GDB, KVM, Bootloader, 断点插入失败
+
+---
+
+## 🧠 背景
+
+调试 Frog 操作系统的启动过程：
+
+```text
+BIOS → Bootloader (0x7C00)
+        ↓ 读取 kernel 到 0xC4000
+        ↓ 开启保护模式，ljmp 到
+Kernel Entry @ 0xC0070000
+```
+
+目标是在 `0xC0070000` 下断点观察 kernel 执行逻辑（如 `UkiMain`）。
+
+---
+
+## 🐛 遇到的问题
+
+在 GDB 中下断点失败：
+
+```gdb
+add-symbol-file core_symbol.img 0xC0070000
+b UkiMain
+```
+
+问题表现：
+
+- 无法命中断点
+- `Cannot access memory at 0xC0070000`
+- `Cannot insert breakpoint`
+- `info break` 显示 `<PENDING>`
+
+---
+
+## 🔍 排查过程与尝试
+
+| 方法 | 是否有效 | 说明 |
+|------|----------|------|
+| `file core_symbol.img` | ✅ 部分成功 | 能加载符号，但可能地址不匹配 |
+| `add-symbol-file core_symbol.img 0xC0070000` | ✅ 成功 | 必须在 kernel 被 bootloader 加载之后执行 |
+| `info break` 检查断点状态 | ✅ | 可确认断点是否 pending |
+| `x/10i 0xC0070000` 查看内核段是否可执行 | ✅ | 无法访问说明内核未加载或权限问题 |
+
+---
+
+## 💥 根本原因
+
+**QEMU 使用了 `-enable-kvm` 导致 GDB 无法写入 guest memory。**
+
+```bash
+qemu-system-i386 -enable-kvm -s -S ...
+```
+
+在 KVM 模式下：
+
+- Guest memory 由 Linux 内核托管（KVM）
+- GDB 无法在目标地址插入 `0xCC`（断点指令）
+- Bootloader 切换 CR0、分页等行为也无法追踪
+
+---
+
+## ✅ 解决方案
+
+1. 移除 `-enable-kvm` 或使用 `sudo`
+2. 改为全模拟模式运行 QEMU：
+
+   ```bash
+   qemu-system-i386 -s -S ...
+   ```
+
+3. 使用如下调试顺序：
+
+   ```gdb
+   target remote localhost:1234
+   c                     # 先让 bootloader 跑完加载 kernel
+   Ctrl+C                # 手动中断执行
+   add-symbol-file core_symbol.img 0xC0070000
+   b UkiMain
+   c
+   ```
+
+---
+
+## ✅ 经验总结
+
+| 问题 | 原因 | 应对策略 |
+|------|------|-----------|
+| GDB 插断点失败 | KVM 内存不可写 | 禁用 KVM 或使用 sudo |
+| 符号地址偏移 | ELF 加载地址不一致 | 使用 `add-symbol-file` 指定地址 |
+| 断点为 `<PENDING>` | 插入时机太早 | 等 kernel 加载后再插入 |
+| `file` 不生效 | 默认地址错误 | 避免与 bootloader 自行加载混用 |
+
+---
+
+## 📚 架构理解提升
+
+- 理解 GDB 插断点机制（写入 0xCC）
+- 熟悉 QEMU 与 KVM 模式在内存控制上的区别
+- 掌握 bootloader → 内核 ELF 加载调试完整流程
+- 初步掌握段寄存器、CR0、paging 等低级调试技巧
+
+
