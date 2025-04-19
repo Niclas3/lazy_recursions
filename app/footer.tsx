@@ -3,6 +3,8 @@ import { AnimatedBackground } from '@/components/ui/animated-background'
 import { TextLoop } from '@/components/ui/text-loop'
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useMantineColorScheme } from '@mantine/core'
+
 import { useEffect, useState } from 'react'
 import { noto_sans_sc } from '@/components/fonts'
 
@@ -27,6 +29,7 @@ const THEMES_OPTIONS = [
 function ThemeSwitch() {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   useEffect(() => {
     setMounted(true)
@@ -48,6 +51,7 @@ function ThemeSwitch() {
       enableHover={false}
       onValueChange={(id) => {
         setTheme(id as string)
+        toggleColorScheme()
       }}
     >
       {THEMES_OPTIONS.map((theme) => {
