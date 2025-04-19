@@ -10,6 +10,8 @@ import {
   MorphingDialogClose,
   MorphingDialogContainer,
 } from '@/components/ui/morphing-dialog'
+
+import {Flex, Box, Paper } from "@mantine/core"
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { SOCIAL_LINKS } from './data'
@@ -140,6 +142,17 @@ export default function Home_page({blog_posts, projects}:{blog_posts : Array<Pos
             Focused on Linux and homebrew operating system. good at C, can do some front-end things.
           </p>
         </div>
+      </motion.section>
+
+      <motion.section>
+        <div> Write board </div>
+        <Flex justify={{sm: 'left'}}
+              gap = {{base: 'sm', sm:'lg'}}> 
+                <Paper shadow="xl" p="xl">
+                        neovim 单行大数据会卡顿 
+                                Sat Apr 19 04:37:00 PM CST 2025
+                </Paper>
+         </Flex>
       </motion.section>
 
       <motion.section
