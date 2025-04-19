@@ -12,8 +12,8 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
 
 const theme = createTheme({
-        primaryColor: 'red',
-        autoContrast: true 
+        primaryColor: 'gray',
+        autoContrast: true ,
 })
 
 export const viewport: Viewport = {
@@ -41,7 +41,6 @@ export default function RootLayout({
       <body
         className={`${noto_sans_sc.className } text-base bg-white tracking-tight antialiased dark:bg-zinc-950`}
       >
-      <MantineProvider theme={theme}>
 
         <ThemeProvider
           enableSystem={true}
@@ -49,6 +48,7 @@ export default function RootLayout({
           storageKey="theme"
           defaultTheme="light"
         >
+        <MantineProvider theme={theme}>
 
           <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
             <div className="relative mx-auto w-full sm:max-w-screen-sm flex-1 px-4 pt-20">
@@ -59,8 +59,8 @@ export default function RootLayout({
             </div>
           </div>
 
+        </MantineProvider>
         </ThemeProvider>
-       </MantineProvider>
        <SpeedInsights />
       </body>
     </html>
