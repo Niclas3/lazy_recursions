@@ -1,0 +1,217 @@
+---
+layout: post
+title: "🐸 Frog OS 调试日志03 时间时间"
+date: 2025-04-21
+categories: []
+tags: []
+---
+
+**时间范围：** 2025年4月17日 ～ 2025年4月21日（最新）  
+**关键词：** QEMU, GDB, KVM, Bootloader, PIT, TSC, CMOS, PLL, RTC, 时钟中断
+
+---
+
+## 🧠 背景
+
+调试 Frog 操作系统的启动过程：
+
+```text
+BIOS → Bootloader (0x7C00)
+        ↓ 读取 kernel 到 0xC4000
+        ↓ 开启保护模式
+        ↓ 启用分页机制
+Kernel Entry @ 0xC0070000
+```
+
+---
+
+## ⏱ 时间子系统专题记录（2025年4月21日新增）
+
+### ⌛️ 时间源对比
+
+| 时间源         | 来源设备                   | 精度         | 用途                         | 是否与线程调度相关 | Frog 是否已使用 | 支持的 CPU 架构 |
+|----------------|----------------------------|--------------|------------------------------|---------------------|------------------|------------------|
+| PIT            | i8253/i8254                | 毫秒级       | 时钟中断、线程节奏、sleep()  | ✅ 是               | ✅ 是             | x86              |
+| TSC            | CPU 寄存器                | 纳秒~微秒级  | 性能计时、运行时间分析       | ❌ 否               | ⚠️ 计划添加       | x86              |
+| CMOS           | 主板 RTC                  | 秒级         | 日期时间、开机时间获取       | ❌ 否               | ⚠️ 计划添加       | x86              |
+| HPET           | 高精度事件定时器           | 微秒级       | 替代 PIT，现代操作系统使用    | ✅ 是               | ❌ 未使用         | x86              |
+| ACPI PM Timer  | 主板 ACPI                 | 微秒级       | 辅助定时，兼容性好            | ❌ 否               | ❌ 未使用         | x86 / 一部分 ARM |
+| APIC Timer     | 高级可编程中断控制器       | 微秒级       | 多核调度时钟中断              | ✅ 是               | ❌ 未使用         | x86              |
+
+- **PIT**：Frog 当前使用频率 9000Hz，超高频率易使系统调度紊乱（推荐 100~1000Hz）
+- **TSC**：`rdtsc` 读取，
+<Expanded_info name={"QEMU 模拟时约为 2000MHz"}>
+# 🧭 QEMU 中的 TSC（时间戳计数器）说明
+
+## 默认 TSC 行为
+
+在 QEMU 中，如果未显式配置 TSC（Time Stamp Counter）频率：
+
+- 默认会使用 **主机 CPU 的 TSC 频率**。
+- 但该频率可能会因为主机硬件、KVM、QEMU 版本不同而 **发生微小浮动**。
+- 某些系统中，主机的 TSC 频率在不同启动之间可能出现：
+  - 2133408000 Hz
+  - 2133406000 Hz
+  - 2133407000 Hz
+
+这会带来问题，尤其是在虚拟机迁移时，如果目标主机不支持 TSC 缩放（TSC scaling），频率不一致将导致时间漂移和迁移失败。
+
+---
+
+## 显式设置 TSC 频率的方法
+
+### ✅ QEMU 启动参数方式
+
+```bash
+qemu-system-x86_64 -cpu host,tsc-frequency=2000000000
+```
+
+此处 `tsc-frequency=2000000000` 表示将 TSC 频率锁定为 **2GHz**。
+
+### ✅ libvirt XML 配置方式
+
+```xml
+<clock>
+  <timer name='tsc' frequency='2000000000'/>
+</clock>
+```
+
+---
+
+## 建议
+
+- 如果 **使用 QEMU/KVM 并计划进行虚拟机迁移**，强烈建议：
+  - 开启 TSC scaling
+  - 或者设置一致的 TSC 频率
+
+---
+
+## 参考资料
+
+- Red Hat 文档：[Virtualization Administration Guide - TSC Timer](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/virtualization_administration_guide/section-freq-mode)
+- Bug 报告：[Bugzilla - TSC frequency mismatch migration failure](https://bugzilla.redhat.com/show_bug.cgi?id=1839095)
+</Expanded_info>
+- **CMOS/RTC**：主要提供系统启动时的“真实时间”基准
+
+---
+
+### 🔍 CMOS 与 TSC 深入解析
+
+#### 🕰 CMOS 实时时钟
+
+- CMOS 是一种保存在主板上的电池供电内存，用于保存 BIOS 设置和系统时间
+- RTC（Real-Time Clock）是 CMOS 的一个功能模块
+- 通过 I/O 端口 `0x70` 和 `0x71` 可读取当前时间（BCD 编码）
+
+📌 Frog 需要添加：
+- [ ] CMOS 初始化函数（读取当前时间）
+- [ ] BCD → 十进制转换逻辑
+- [ ] 提供 `get_cmos_time()` 类似接口
+
+示例代码：
+```c
+uint8_t read_cmos(uint8_t reg) {
+    outb(0x70, reg);
+    return inb(0x71);
+}
+
+uint8_t bcd_to_bin(uint8_t val) {
+    return (val & 0x0F) + ((val >> 4) * 10);
+}
+
+void get_cmos_time(struct rtc_time *time) {
+    time->second = bcd_to_bin(read_cmos(0x00));
+    time->minute = bcd_to_bin(read_cmos(0x02));
+    time->hour   = bcd_to_bin(read_cmos(0x04));
+    time->day    = bcd_to_bin(read_cmos(0x07));
+    time->month  = bcd_to_bin(read_cmos(0x08));
+    time->year   = bcd_to_bin(read_cmos(0x09));
+}
+```
+
+#### ⏱ TSC 时间戳计数器
+
+- TSC 是 CPU 提供的一个 64 位寄存器，每个周期自增一次
+- 可通过 `rdtsc` 指令读取
+- 支持情况通过 `CPUID` 指令判断（bit 4 of EDX in EAX=1）
+
+📌 Frog 需要添加：
+- [ ] `cpuid_supports_tsc()` 判断函数
+- [ ] `measure_tsc_mhz()` 基于延迟测量 TSC 频率
+- [ ] 提供 `tsc_now()` 与 `tsc_elapsed(start, end)` 接口
+
+示例代码：
+```c
+bool cpuid_supports_tsc() {
+    uint32_t eax, ebx, ecx, edx;
+    eax = 1;
+    __asm__ volatile ("cpuid"
+                      : "+a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx));
+    return edx & (1 << 4);
+}
+
+uint64_t rdtsc_now() {
+    uint32_t lo, hi;
+    __asm__ volatile("rdtsc" : "=a"(lo), "=d"(hi));
+    return ((uint64_t)hi << 32) | lo;
+}
+```
+
+🧠 TSC 类型：
+- **Invariant TSC**：不随 CPU 睡眠或频率变化而变
+- **Constant TSC**：随频率变动但线性，可用于时间戳
+
+---
+
+### 🧠 补充知识：频率来源与主板角色
+
+- **主板晶振**：提供统一振荡源 → 分频/倍频 → CPU 主频、PIT 频率等
+- **PLL 锁相环**：一种模拟电路，通过反馈控制让输出频率稳定且成倍于输入
+- **超频**：调整 PLL 倍率，提升 CPU 时钟速率（风险：稳定性 & 发热）
+
+---
+
+### 📏 时间测量与节奏控制逻辑
+
+```text
+用户程序 sleep(100秒)
+       ↓
+kernel 转换为 ticks = HZ × 秒数（例：100×100）
+       ↓
+时钟中断每触发一次，ticks--
+       ↓
+ticks == 0 → 唤醒线程
+```
+
+- TSC 更多用于高精度 profiling
+- CMOS 时间用于提供 wall-clock time（打印日期等）
+
+
+---
+## 后
+对于时间的论述并不会在这里停止，时间子系统类似frog的心脏源源不断的提供时间中断，给出
+程序运行的节律。我会在thread模块的时候继续看到PIT的
+
+* 🥁 PIT（时间中断源）: 
+    更像是提供一种OS特有的节奏，类似学习乐器的开启的节拍器，正如节拍器的引入可以让不同声部配合紧密，时间中断的引入
+    也让CPU在时间中的抽象processer得以可能。 它不是为了“记录时间”，而是为了“划分时间”。
+
+* ⏲️  TSC (处理器速度) :
+    是反映一种CPU本身的频率，这种频率揭示了cpu消耗或者执行指令的速度，他相当于就是另一个乐器，它和PIT配合，才让OS得以可能
+
+* 🕰CMOS
+    是一种对这两种时间的补充，上述2个工具，提高了上电或者开机时的时间测量，CMOS补全了关机时时间不会随之暂停的问题。
+
+#### Frog 的时钟与时间系统基本具备：
+- 🧭 PIT → 线程调度节奏
+- 🕰 CMOS → 系统时间获取
+- 🧮 TSC → 微秒级精度计时/分析
+
+🔧 **待补充模块：**
+- [ ] 获取 TSC 频率（`rdtsc` + PIT/延迟法）
+- [ ] 判断 CPU 是否支持 TSC（通过 CPUID）
+- [ ] CMOS 初始化函数 & 实时时间获取（BDS/RTC）
+- [ ] `gettimeofday()`, `clock()` 等用户态接口包装
+
+后续可考虑整合时间模块接口，支持多时间源 fallback 与抽象封装。
+
