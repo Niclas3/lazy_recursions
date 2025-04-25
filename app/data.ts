@@ -29,7 +29,7 @@ type SocialLink = {
 
 export const PROJECTS: Project[] = [
   {
-    name: 'Forg',
+    name: '🐸 Forg',
     description:
       'A fully functional 32-bit operating system was independently developed, showcasing exceptional expertise in low-level computer technology.',
     link: 'https://github.com/Niclas3/Frog',
